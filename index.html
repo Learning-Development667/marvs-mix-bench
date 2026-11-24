@@ -4,598 +4,551 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MARV's Mix Bench</title>
-<meta name="theme-color" content="#0c1c35">
+<meta name="theme-color" content="#0b1830">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mix Bench">
 <link rel="icon" type="image/png" href="images/marv-focussed.png">
 <link rel="apple-touch-icon" href="images/marv-focussed.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap">
 <style>
-  /* Layout: one phone-width column. Deep navy brand band with MARV, a sticky
-     segmented control, then raised cards on a soft ground: inputs sit in recessed
-     wells, answers read out like an instrument, tinters show as paint pots. */
+  /* Layout: a phone-shaped app in MARV's workshop. Claymation workshop art and a
+     large MARV open the screen; controls are dark glass on deep navy; the mixed
+     recipe is laid out on a wooden bench; a floating dock switches tools.
+     One committed dark look, like Colour Lab. */
   :root {
-    --bg-1: #eef1f5;
-    --bg-2: #dde3ea;
-    --surface: #ffffff;
-    --surface-2: #f5f7fa;
-    --well: #edf0f4;
-    --line: #d0d7df;
-    --line-strong: #b7c1cd;
-    --hi: rgba(255, 255, 255, 0.95);
-    --fg: #13233b;
-    --muted: #5a6778;
-    --brand-1: #1f4175;
-    --brand-2: #13294b;
-    --brand-3: #0c1c35;
-    --brand-glow: #2f5ea3;
-    --brand-fg: #ffffff;
-    --brand-soft: rgba(255, 255, 255, 0.74);
-    --track: rgba(0, 0, 0, 0.3);
-    --track-line: rgba(255, 255, 255, 0.09);
-    --accent-1: #c8e6a5;
-    --accent-2: #aed284;
-    --accent-3: #8fbf63;
-    --accent-ink: #13294b;
-    --btn-1: #ffffff;
-    --btn-2: #eaeef3;
-    --sel-1: #24487f;
-    --sel-2: #13294b;
-    --sel-fg: #ffffff;
-    --sel-glow: rgba(19, 41, 75, 0.32);
-    --bubble: #f2f7ea;
-    --bubble-line: #cfe2b8;
-    --ok: #1d6a2d;
-    --ok-bg-1: #ecf8e9;
-    --ok-bg-2: #d8efd3;
-    --ok-line: #9bcd93;
-    --warn: #7a4d00;
-    --warn-bg-1: #fef5dd;
-    --warn-bg-2: #f8e5b5;
-    --warn-line: #e0bb62;
-    --stop: #9a2a18;
-    --stop-bg-1: #feece8;
-    --stop-bg-2: #f8d5cc;
-    --stop-line: #e29a8b;
-    --icon-fg: #ffffff;
-    --shadow-card: 0 1px 2px rgba(19, 41, 75, 0.06), 0 4px 12px rgba(19, 41, 75, 0.08), 0 18px 32px -14px rgba(19, 41, 75, 0.16);
-    --shadow-raised: 0 1px 1px rgba(19, 41, 75, 0.1), 0 2px 5px rgba(19, 41, 75, 0.1);
-    --shadow-well: inset 0 1px 3px rgba(19, 41, 75, 0.16), inset 0 0 0 1px rgba(19, 41, 75, 0.03);
-    --shadow-bar: 0 6px 18px rgba(12, 28, 53, 0.28);
-    --pot-ring: rgba(255, 255, 255, 0.96);
-    --pot-edge: rgba(19, 41, 75, 0.38);
-    --tile: #ffffff;
-    --focus: #2563a8;
-    --focus-glow: rgba(143, 191, 99, 0.5);
-    --font: "Open Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg-1: #0f1c31;
-      --bg-2: #081120;
-      --surface: #1a2c4a;
-      --surface-2: #14233d;
-      --well: #0b1627;
-      --line: #2a3d5d;
-      --line-strong: #3b5177;
-      --hi: rgba(255, 255, 255, 0.08);
-      --fg: #eaf0f8;
-      --muted: #9fb0c8;
-      --brand-1: #1f4175;
-      --brand-2: #13294b;
-      --brand-3: #0a172b;
-      --brand-glow: #2f5ea3;
-      --brand-fg: #ffffff;
-      --brand-soft: rgba(255, 255, 255, 0.74);
-      --track: rgba(0, 0, 0, 0.38);
-      --track-line: rgba(255, 255, 255, 0.09);
-      --accent-1: #c8e6a5;
-      --accent-2: #aed284;
-      --accent-3: #8fbf63;
-      --accent-ink: #13294b;
-      --btn-1: #26395c;
-      --btn-2: #1b2b49;
-      --sel-1: #c8e6a5;
-      --sel-2: #9bc86e;
-      --sel-fg: #13294b;
-      --sel-glow: rgba(174, 210, 132, 0.28);
-      --bubble: #1c3050;
-      --bubble-line: #35507a;
-      --ok: #a8e2aa;
-      --ok-bg-1: #183726;
-      --ok-bg-2: #112a1c;
-      --ok-line: #2f6b40;
-      --warn: #f1cd82;
-      --warn-bg-1: #3d3015;
-      --warn-bg-2: #2c230f;
-      --warn-line: #7c5f1f;
-      --stop: #f7ac9e;
-      --stop-bg-1: #44221c;
-      --stop-bg-2: #321813;
-      --stop-line: #8c3b2d;
-      --icon-fg: #0b1627;
-      --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 26px rgba(0, 0, 0, 0.38);
-      --shadow-raised: 0 1px 1px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
-      --shadow-well: inset 0 1px 3px rgba(0, 0, 0, 0.55);
-      --shadow-bar: 0 6px 18px rgba(0, 0, 0, 0.5);
-      --pot-ring: rgba(255, 255, 255, 0.88);
-      --pot-edge: rgba(0, 0, 0, 0.55);
-      --tile: #ffffff;
-      --focus: #8fbdf2;
-      --focus-glow: rgba(174, 210, 132, 0.4);
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg-1: #0f1c31;
-    --bg-2: #081120;
-    --surface: #1a2c4a;
-    --surface-2: #14233d;
-    --well: #0b1627;
-    --line: #2a3d5d;
-    --line-strong: #3b5177;
-    --hi: rgba(255, 255, 255, 0.08);
-    --fg: #eaf0f8;
-    --muted: #9fb0c8;
-    --brand-1: #1f4175;
-    --brand-2: #13294b;
-    --brand-3: #0a172b;
-    --brand-glow: #2f5ea3;
-    --brand-fg: #ffffff;
-    --brand-soft: rgba(255, 255, 255, 0.74);
-    --track: rgba(0, 0, 0, 0.38);
-    --track-line: rgba(255, 255, 255, 0.09);
-    --accent-1: #c8e6a5;
-    --accent-2: #aed284;
-    --accent-3: #8fbf63;
-    --accent-ink: #13294b;
-    --btn-1: #26395c;
-    --btn-2: #1b2b49;
-    --sel-1: #c8e6a5;
-    --sel-2: #9bc86e;
-    --sel-fg: #13294b;
-    --sel-glow: rgba(174, 210, 132, 0.28);
-    --bubble: #1c3050;
-    --bubble-line: #35507a;
-    --ok: #a8e2aa;
-    --ok-bg-1: #183726;
-    --ok-bg-2: #112a1c;
-    --ok-line: #2f6b40;
-    --warn: #f1cd82;
-    --warn-bg-1: #3d3015;
-    --warn-bg-2: #2c230f;
-    --warn-line: #7c5f1f;
-    --stop: #f7ac9e;
-    --stop-bg-1: #44221c;
-    --stop-bg-2: #321813;
-    --stop-line: #8c3b2d;
-    --icon-fg: #0b1627;
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 26px rgba(0, 0, 0, 0.38);
-    --shadow-raised: 0 1px 1px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
-    --shadow-well: inset 0 1px 3px rgba(0, 0, 0, 0.55);
-    --shadow-bar: 0 6px 18px rgba(0, 0, 0, 0.5);
-    --pot-ring: rgba(255, 255, 255, 0.88);
-    --pot-edge: rgba(0, 0, 0, 0.55);
-    --tile: #ffffff;
-    --focus: #8fbdf2;
-    --focus-glow: rgba(174, 210, 132, 0.4);
     color-scheme: dark;
+    --navy-0: #060d1b;
+    --navy-1: #0b1830;
+    --navy-2: #13294b;
+    --navy-3: #1d3c69;
+    --glow: #2f5ea3;
+    --wasabi: #aed284;
+    --wasabi-hi: #cfeaae;
+    --wasabi-lo: #82b455;
+    --wasabi-ink: #10233f;
+    --ink: #f4f7fc;
+    --ink-2: rgba(244, 247, 252, 0.74);
+    --ink-3: rgba(244, 247, 252, 0.52);
+    --glass-1: rgba(255, 255, 255, 0.095);
+    --glass-2: rgba(255, 255, 255, 0.04);
+    --hair: rgba(255, 255, 255, 0.13);
+    --hair-2: rgba(255, 255, 255, 0.22);
+    --well: rgba(0, 0, 0, 0.34);
+    --wood-1: #6a4f39;
+    --wood-2: #4a3626;
+    --wood-3: #2c2016;
+    --ok: #a9ebb1;
+    --ok-solid: #1f7a36;
+    --ok-wash: rgba(62, 160, 88, 0.26);
+    --ok-line: rgba(143, 224, 154, 0.5);
+    --warn: #ffdc92;
+    --warn-solid: #a56800;
+    --warn-wash: rgba(214, 150, 30, 0.24);
+    --warn-line: rgba(255, 210, 122, 0.5);
+    --stop: #ffb6a8;
+    --stop-solid: #b53a25;
+    --stop-wash: rgba(214, 78, 52, 0.26);
+    --stop-line: rgba(255, 157, 140, 0.5);
+    --bubble: #f5f9ef;
+    --bubble-ink: #13294b;
+    --bubble-line: rgba(19, 41, 75, 0.14);
+    --display: "Sora", "Segoe UI", system-ui, sans-serif;
+    --body: "Open Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
   }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; }
-  html { min-height: 100%; }
+  html { min-height: 100%; background: #060d1b; }
   img { max-width: 100%; }
   [hidden] { display: none !important; }
   body {
-    background: var(--bg-2);
-    background-image: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    background-color: var(--navy-0);
+    background-image:
+      radial-gradient(70% 38% at 85% 0%, rgba(47, 94, 163, 0.38), transparent 70%),
+      linear-gradient(180deg, var(--navy-1) 0%, var(--navy-0) 60%);
     background-attachment: fixed;
-    color: var(--fg);
-    font-family: var(--font);
+    color: var(--ink);
+    font-family: var(--body);
     font-size: 15px;
     line-height: 1.45;
     -webkit-font-smoothing: antialiased;
   }
-  body::before {
-    content: ""; position: fixed; inset: 0 0 auto; z-index: 10;
-    height: env(safe-area-inset-top, 0px); background: var(--brand-3);
-  }
   button, input, select { font: inherit; color: inherit; }
-  button { -webkit-tap-highlight-color: transparent; }
-  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--wasabi); outline-offset: 2px; }
 
+  .backdrop { display: none; }
+  .app { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; }
   .wrap {
-    max-width: 540px;
-    margin: 0 auto;
     padding-left: max(16px, env(safe-area-inset-left, 0px));
     padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
 
-  /* ── Brand band ── */
-  .top {
+  /* ── Hero: the workshop ── */
+  .hero { position: relative; isolation: isolate; }
+  .hero-art {
+    position: absolute; inset: 0; z-index: -1;
+    background: var(--navy-2) url("images/workshop.webp") 50% 30% / cover no-repeat;
+  }
+  .hero-art::after {
+    content: ""; position: absolute; inset: 0;
     background:
-      radial-gradient(130% 150% at 88% -30%, var(--brand-glow) 0%, transparent 58%),
-      linear-gradient(180deg, var(--brand-1) 0%, var(--brand-2) 55%, var(--brand-3) 100%);
-    color: var(--brand-fg);
-    margin-top: calc(-1 * env(safe-area-inset-top, 0px));
-    padding-top: calc(env(safe-area-inset-top, 0px) + 18px);
-    padding-bottom: 14px;
+      linear-gradient(90deg, rgba(6, 13, 27, 0.7) 0%, rgba(6, 13, 27, 0.2) 62%, rgba(6, 13, 27, 0) 100%),
+      linear-gradient(180deg, rgba(6, 13, 27, 0.18) 0%, rgba(6, 13, 27, 0.12) 38%, rgba(8, 18, 36, 0.92) 86%, var(--navy-1) 100%);
   }
-  .top-row { display: flex; align-items: center; gap: 13px; }
-  .avatar {
-    flex: none; width: 54px; height: 54px; border-radius: 50%; overflow: hidden;
-    background: var(--tile);
-    box-shadow: 0 0 0 2px var(--accent-2), 0 0 0 5px rgba(174, 210, 132, 0.22), 0 6px 14px rgba(0, 0, 0, 0.4);
+  .hero-in { display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; min-height: 226px; padding-block: 18px 16px; }
+  .hero-text { min-width: 0; padding-bottom: 6px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--wasabi);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
   }
-  .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 6%; display: block; }
-  .brand { min-width: 0; flex: 1; }
-  .brand h1 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.15; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
-  .brand p { margin: 2px 0 0; font-size: 12.5px; color: var(--brand-soft); }
   .demo-pill {
-    flex: none; font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
-    background: linear-gradient(180deg, var(--accent-1), var(--accent-3)); color: var(--accent-ink);
-    padding: 4px 10px; border-radius: 999px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
+    font-size: 9.5px; letter-spacing: 0.14em; color: var(--wasabi-ink);
+    background: linear-gradient(180deg, var(--wasabi-hi), var(--wasabi-lo));
+    padding: 3px 9px; border-radius: 999px; text-shadow: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+  .hero h1 {
+    margin: 6px 0 0; font-family: var(--display); font-size: 34px; font-weight: 800; line-height: 1.05;
+    letter-spacing: -0.025em; text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7); text-wrap: balance;
+  }
+  .hero p { margin: 6px 0 0; font-size: 14px; color: var(--ink-2); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8); }
+  .hero-marv {
+    flex: none; height: 196px; width: auto; margin-bottom: -40px; margin-right: -4px; position: relative; z-index: 2;
+    filter: drop-shadow(0 14px 16px rgba(0, 0, 0, 0.55));
+    animation: bob 4.5s ease-in-out infinite;
+  }
+  @keyframes bob { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-5px) rotate(1deg); } }
+
+  main { padding-block: 20px 124px; display: flex; flex-direction: column; gap: 16px; }
+  .panel { display: flex; flex-direction: column; gap: 16px; animation: rise 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes pop { from { opacity: 0.35; transform: translateY(6px) scale(0.985); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .panel, .hero-marv, .line, .coach-marv, .verdict, .say { animation: none !important; }
+    * { transition: none !important; }
   }
 
-  /* ── Sticky segmented control ── */
-  .tabbar {
-    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9;
-    background: var(--brand-3); padding-block: 0 12px; box-shadow: var(--shadow-bar);
-  }
-  .tabs {
-    display: flex; gap: 4px; padding: 4px; border-radius: 15px;
-    background: var(--track); border: 1px solid var(--track-line);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
-  }
-  .tab {
-    flex: 1; border: 0; background: transparent; color: var(--brand-soft);
-    padding: 10px 6px; font-size: 13.5px; font-weight: 700; cursor: pointer; border-radius: 11px;
-    transition: color 0.15s ease, background 0.15s ease;
-  }
-  .tab[aria-selected="true"] {
-    color: var(--accent-ink);
-    background: linear-gradient(180deg, var(--accent-1) 0%, var(--accent-2) 48%, var(--accent-3) 100%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.28);
-  }
-
-  main { padding-block: 18px 44px; display: flex; flex-direction: column; gap: 16px; }
-  .panel { display: flex; flex-direction: column; gap: 16px; animation: rise 0.22s ease both; }
-  @keyframes rise { from { opacity: 0.4; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .panel { animation: none; } * { transition: none !important; } }
-
-  /* ── Cards ── */
+  /* ── Glass cards ── */
   .card {
-    background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
-    border: 1px solid var(--line); border-radius: 18px;
-    box-shadow: var(--shadow-card), inset 0 1px 0 var(--hi);
-    padding: 16px; display: flex; flex-direction: column; gap: 13px;
+    background: linear-gradient(180deg, var(--glass-1) 0%, var(--glass-2) 100%);
+    border: 1px solid var(--hair); border-radius: 24px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 22px 44px -22px rgba(0, 0, 0, 0.85);
+    padding: 18px; display: flex; flex-direction: column; gap: 14px;
   }
-  .card h2 {
-    margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: 0.11em;
-    text-transform: uppercase; color: var(--muted);
-    display: flex; align-items: center; gap: 10px;
+  .card h2 { margin: 0; font-family: var(--display); font-size: 16.5px; font-weight: 700; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .tag {
+    font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--warn); border: 1px solid var(--warn-line); background: var(--warn-wash); padding: 2px 8px; border-radius: 999px;
   }
-  .card h2::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line-strong), transparent); }
-  .hint { margin: 0; font-size: 12.5px; color: var(--muted); }
+  .hint { margin: 0; font-size: 12.5px; color: var(--ink-3); }
+  .label { font-size: 13px; font-weight: 700; color: var(--ink-2); }
 
-  /* ── Inputs sit in wells ── */
-  .field-line { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; font-weight: 700; }
-  .num, select.pick {
-    background: var(--well); border: 1px solid var(--line-strong); border-radius: 11px;
-    box-shadow: var(--shadow-well); font-size: 16px;
+  /* ── Wells and inputs ── */
+  .inwell {
+    display: flex; align-items: center; gap: 5px; min-width: 0;
+    background: var(--well); border: 1px solid var(--hair); border-radius: 14px; padding: 0 11px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  .num { width: 96px; padding: 10px 11px; font-weight: 800; font-variant-numeric: tabular-nums; text-align: right; }
-  select.pick { min-width: 0; width: 100%; padding: 10px 6px; font-weight: 600; }
-  .num:focus, select.pick:focus { outline: none; border-color: var(--accent-3); box-shadow: var(--shadow-well), 0 0 0 3px var(--focus-glow); }
-  .rows { display: flex; flex-direction: column; gap: 9px; }
-  .row { display: grid; grid-template-columns: 20px minmax(0, 1fr) 70px auto 36px; gap: 7px; align-items: center; }
-  .row .num { width: 100%; }
-  .unit { font-size: 13px; color: var(--muted); font-weight: 700; }
-
-  /* ── Raised controls ── */
-  .ghost, .chip, .icon-btn, .big-btn {
-    background: linear-gradient(180deg, var(--btn-1), var(--btn-2));
-    border: 1px solid var(--line-strong);
-    box-shadow: var(--shadow-raised), inset 0 1px 0 var(--hi);
-    cursor: pointer; font-weight: 700;
-    transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.15s ease;
+  .inwell:focus-within { border-color: var(--wasabi); box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45), 0 0 0 3px rgba(174, 210, 132, 0.22); }
+  .inwell input {
+    width: 100%; min-width: 0; background: transparent; border: 0; outline: none; padding: 11px 0;
+    font-family: var(--display); font-size: 17px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums;
   }
-  .ghost:active, .chip:active, .icon-btn:active, .big-btn:active, .cta:active { transform: translateY(1px); box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); }
-  .ghost { border-radius: 11px; padding: 9px 13px; font-size: 13.5px; }
-  .icon-btn { width: 36px; height: 42px; border-radius: 11px; font-size: 19px; line-height: 1; color: var(--muted); }
+  .inwell span { font-size: 12.5px; font-weight: 700; color: var(--wasabi); }
+  .makes { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .makes .inwell { width: 128px; }
+  select.pick {
+    min-width: 0; width: 100%; padding: 12px 2px 12px 9px; font-size: 16px; font-weight: 600;
+    background: var(--well); border: 1px solid var(--hair); border-radius: 14px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
+  }
+  select.pick:focus { outline: none; border-color: var(--wasabi); box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45), 0 0 0 3px rgba(174, 210, 132, 0.22); }
+  .rows { display: flex; flex-direction: column; gap: 10px; }
+  .row { display: grid; grid-template-columns: 24px minmax(0, 1fr) 76px 36px; gap: 8px; align-items: center; }
+  .row .inwell { padding: 0 9px; }
+
+  /* ── Buttons ── */
+  .ghost, .chip, .icon-btn, .big-btn, .step {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--hair-2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 6px 14px -8px rgba(0, 0, 0, 0.8);
+    font-weight: 700;
+    transition: transform 0.1s ease, background 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+  }
+  .ghost:active, .chip:active, .icon-btn:active, .big-btn:active, .step:active, .cta:active, .dock button:active { transform: scale(0.96); }
+  .ghost { border-radius: 13px; padding: 10px 14px; font-size: 13.5px; }
+  .icon-btn { width: 36px; height: 46px; border-radius: 14px; font-size: 20px; line-height: 1; color: var(--ink-2); }
   .link-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .chips { display: flex; gap: 7px; flex-wrap: wrap; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
   .chip { border-radius: 999px; padding: 8px 15px; font-size: 13.5px; font-variant-numeric: tabular-nums; }
-  .chip[aria-pressed="true"], .big-btn[aria-pressed="true"] {
-    background: linear-gradient(180deg, var(--sel-1), var(--sel-2)); color: var(--sel-fg); border-color: var(--sel-2);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 3px 9px var(--sel-glow);
+  .chip[aria-pressed="true"], .big-btn[aria-pressed="true"], .seg button[aria-pressed="true"] {
+    background: linear-gradient(180deg, var(--wasabi-hi) 0%, var(--wasabi) 48%, var(--wasabi-lo) 100%);
+    color: var(--wasabi-ink); border-color: rgba(255, 255, 255, 0.55);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 22px -6px rgba(174, 210, 132, 0.55);
   }
   .cta {
-    border: 1px solid var(--sel-2); border-radius: 11px; padding: 10px 15px; font-size: 13.5px; font-weight: 800; cursor: pointer;
-    background: linear-gradient(180deg, var(--sel-1), var(--sel-2)); color: var(--sel-fg);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 3px 9px var(--sel-glow);
-    transition: transform 0.08s ease, box-shadow 0.12s ease;
+    border: 1px solid rgba(255, 255, 255, 0.55); border-radius: 13px; padding: 11px 16px; font-size: 13.5px; font-weight: 800;
+    background: linear-gradient(180deg, var(--wasabi-hi) 0%, var(--wasabi) 48%, var(--wasabi-lo) 100%); color: var(--wasabi-ink);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 22px -6px rgba(174, 210, 132, 0.55);
+    transition: transform 0.1s ease;
   }
+
+  /* ── Quantity stepper ── */
+  .stepper { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .step { width: 54px; height: 54px; border-radius: 50%; font-family: var(--display); font-size: 26px; line-height: 1; color: var(--wasabi); flex: none; }
+  .qty { display: flex; align-items: baseline; justify-content: center; gap: 6px; min-width: 0; }
+  .qty input {
+    width: 3.6ch; min-width: 0; background: transparent; border: 0; outline: none; padding: 0; text-align: right;
+    font-family: var(--display); font-size: 50px; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+    -moz-appearance: textfield; appearance: textfield;
+  }
+  .qty input::-webkit-outer-spin-button, .qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .qty input:focus { text-decoration: underline; text-decoration-color: var(--wasabi); text-underline-offset: 6px; text-decoration-thickness: 3px; }
+  .qty span { font-family: var(--display); font-size: 19px; font-weight: 700; color: var(--wasabi); }
+  .seg { display: flex; gap: 4px; padding: 4px; border-radius: 16px; background: var(--well); border: 1px solid var(--hair); box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45); }
+  .seg button { flex: 1; border: 1px solid transparent; background: transparent; border-radius: 12px; padding: 10px 6px; font-size: 14px; font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; transition: all 0.18s ease; }
 
   /* ── Paint pots ── */
   .pot {
-    --s: 18px;
+    --s: 22px;
     display: inline-block; flex: none; width: var(--s); height: var(--s); border-radius: 50%;
+    background-image: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.14) 24%, transparent 48%);
     box-shadow:
-      inset 0 -3px 5px rgba(0, 0, 0, 0.3),
-      inset 0 2px 3px rgba(255, 255, 255, 0.3),
-      0 0 0 2px var(--pot-ring),
-      0 0 0 3px var(--pot-edge),
-      0 2px 5px rgba(0, 0, 0, 0.28);
+      inset 0 -5px 8px rgba(0, 0, 0, 0.38),
+      inset 0 2px 3px rgba(255, 255, 255, 0.25),
+      0 0 0 2.5px rgba(255, 255, 255, 0.94),
+      0 0 0 4px rgba(0, 0, 0, 0.42),
+      0 5px 9px rgba(0, 0, 0, 0.5);
   }
-  .pot.lg { --s: 24px; }
-  .cue-light { background: #f4f4f1; }
-  .cue-dark { background: #1c1c1e; }
-  .cue-red { background: #c2264b; }
-  .cue-green { background: #0f7a57; }
-  .cue-yellow { background: #f2c417; }
-  .cue-blue { background: #17479e; }
-  .cue-bright { background: linear-gradient(135deg, #ffd21f 0%, #ff4d6d 50%, #2f7bff 100%); }
-  .cue-dull { background: #8b8679; }
+  .pot.lg { --s: 30px; }
+  .cue-light { background-color: #f4f4f1; }
+  .cue-dark { background-color: #1c1c1e; }
+  .cue-red { background-color: #c2264b; }
+  .cue-green { background-color: #0f7a57; }
+  .cue-yellow { background-color: #f2c417; }
+  .cue-blue { background-color: #17479e; }
+  .cue-bright { background-image: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.14) 24%, transparent 48%), linear-gradient(135deg, #ffd21f 0%, #ff4d6d 50%, #2f7bff 100%); }
+  .cue-dull { background-color: #8b8679; }
 
   /* ── Verdict ── */
   .verdict {
-    border-radius: 18px; padding: 15px 16px; border: 1px solid transparent;
-    display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 13px; align-items: start;
-    box-shadow: var(--shadow-card), inset 0 1px 0 var(--hi);
+    border-radius: 24px; padding: 16px 18px; border: 1px solid transparent;
+    display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 14px; align-items: start;
+    animation: pop 0.28s ease both;
   }
-  .verdict .icon {
-    width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    color: var(--icon-fg); box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.22), inset 0 1px 2px rgba(255, 255, 255, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
-  }
-  .verdict .icon svg { width: 20px; height: 20px; }
+  .verdict .icon { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.25), inset 0 2px 3px rgba(255, 255, 255, 0.35), 0 6px 14px rgba(0, 0, 0, 0.4); }
+  .verdict .icon svg { width: 22px; height: 22px; }
   .verdict .body { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
-  .verdict strong { font-size: 16px; font-weight: 800; line-height: 1.25; text-wrap: balance; }
-  .verdict p { margin: 0; font-size: 13.5px; color: var(--fg); }
-  .verdict.ok { background: linear-gradient(180deg, var(--ok-bg-1), var(--ok-bg-2)); border-color: var(--ok-line); color: var(--ok); }
-  .verdict.ok .icon { background: var(--ok); }
-  .verdict.warn { background: linear-gradient(180deg, var(--warn-bg-1), var(--warn-bg-2)); border-color: var(--warn-line); color: var(--warn); }
-  .verdict.warn .icon { background: var(--warn); }
-  .verdict.stop { background: linear-gradient(180deg, var(--stop-bg-1), var(--stop-bg-2)); border-color: var(--stop-line); color: var(--stop); }
-  .verdict.stop .icon { background: var(--stop); }
+  .verdict strong { font-family: var(--display); font-size: 17px; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; text-wrap: balance; }
+  .verdict p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+  .verdict.ok { background: linear-gradient(180deg, var(--ok-wash), rgba(62, 160, 88, 0.1)); border-color: var(--ok-line); box-shadow: 0 18px 40px -20px rgba(80, 200, 110, 0.6); }
+  .verdict.ok strong { color: var(--ok); } .verdict.ok .icon { background: var(--ok-solid); }
+  .verdict.warn { background: linear-gradient(180deg, var(--warn-wash), rgba(214, 150, 30, 0.09)); border-color: var(--warn-line); box-shadow: 0 18px 40px -20px rgba(230, 170, 50, 0.6); }
+  .verdict.warn strong { color: var(--warn); } .verdict.warn .icon { background: var(--warn-solid); }
+  .verdict.stop { background: linear-gradient(180deg, var(--stop-wash), rgba(214, 78, 52, 0.1)); border-color: var(--stop-line); box-shadow: 0 18px 40px -20px rgba(230, 90, 60, 0.6); }
+  .verdict.stop strong { color: var(--stop); } .verdict.stop .icon { background: var(--stop-solid); }
 
-  /* ── Result lines ── */
+  /* ── The bench: results laid out on wood ── */
+  .bench {
+    border-radius: 24px; padding: 18px; display: flex; flex-direction: column; gap: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.16); border-top: 4px solid #8a6a4f;
+    background:
+      repeating-linear-gradient(180deg, transparent 0 3px, rgba(0, 0, 0, 0.055) 3px 4px),
+      repeating-linear-gradient(92deg, transparent 0 46px, rgba(255, 255, 255, 0.022) 46px 92px),
+      linear-gradient(180deg, var(--wood-1) 0%, var(--wood-2) 38%, var(--wood-3) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 24px 46px -20px rgba(0, 0, 0, 0.9);
+  }
+  .bench h2 { margin: 0; font-family: var(--display); font-size: 18px; font-weight: 700; letter-spacing: -0.01em; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); }
+  .mixbar-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .mixbar { position: relative; display: flex; gap: 2px; height: 16px; border-radius: 999px; overflow: hidden; background: rgba(0, 0, 0, 0.4); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85), 0 0 0 3.5px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.4); }
+  .mixbar i { display: block; min-width: 6px; transition: flex-grow 0.35s ease; }
+  .mixbar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.05) 45%, rgba(0, 0, 0, 0.22) 100%); pointer-events: none; }
+  .mixbar-wrap small { font-size: 11.5px; color: rgba(255, 255, 255, 0.6); }
   .lines { display: flex; flex-direction: column; }
-  .line { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 6px 12px; padding: 13px 0; border-top: 1px solid var(--line); align-items: center; }
-  .line:first-child { border-top: 0; padding-top: 2px; }
-  .line .info { min-width: 0; display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
-  .line .name { font-weight: 800; font-size: 15.5px; }
-  .line .code { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .line {
+    display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 6px 12px; padding: 14px 0; align-items: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.38); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    animation: pop 0.3s ease both;
+  }
+  .line:first-child { border-top: 0; box-shadow: none; padding-top: 2px; }
+  .line .info { min-width: 0; display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
+  .line .name { font-family: var(--display); font-weight: 700; font-size: 15.5px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); }
+  .line .code { font-size: 11.5px; color: rgba(255, 255, 255, 0.6); font-variant-numeric: tabular-nums; }
   .readout {
-    min-width: 98px; text-align: right; white-space: nowrap;
-    background: var(--well); border: 1px solid var(--line-strong); border-radius: 11px;
-    box-shadow: var(--shadow-well); padding: 7px 11px;
-    font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+    min-width: 106px; text-align: right; white-space: nowrap;
+    background: rgba(0, 0, 0, 0.42); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 15px;
+    box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.1); padding: 8px 13px;
+    font-family: var(--display); font-size: 23px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
   }
-  .readout span { font-size: 12.5px; font-weight: 700; color: var(--muted); margin-left: 3px; }
-  .line .why { grid-column: 2 / -1; font-size: 12.5px; color: var(--muted); margin: 0; }
-  .pill {
-    display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase;
-    padding: 2px 9px; border-radius: 999px; border: 1px solid transparent; margin-top: 2px;
-  }
-  .pill.ok { background: linear-gradient(180deg, var(--ok-bg-1), var(--ok-bg-2)); color: var(--ok); border-color: var(--ok-line); }
-  .pill.warn { background: linear-gradient(180deg, var(--warn-bg-1), var(--warn-bg-2)); color: var(--warn); border-color: var(--warn-line); }
-  .pill.stop { background: linear-gradient(180deg, var(--stop-bg-1), var(--stop-bg-2)); color: var(--stop); border-color: var(--stop-line); }
-  .binder {
-    margin-top: 4px; background: var(--well); border: 1px dashed var(--line-strong); border-radius: 12px;
-    padding: 11px 13px; font-weight: 700; font-size: 14px;
-  }
+  .readout span { font-size: 13px; font-weight: 700; color: var(--wasabi); margin-left: 4px; letter-spacing: 0; }
+  .line .why { grid-column: 2 / -1; font-size: 12.5px; color: rgba(255, 255, 255, 0.68); margin: 0; }
+  .lines > .why { font-size: 13.5px; color: rgba(255, 255, 255, 0.72); margin: 0; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 2px 5px rgba(0, 0, 0, 0.3); }
+  .pill.ok { background: var(--ok-solid); }
+  .pill.warn { background: var(--warn-solid); }
+  .pill.stop { background: var(--stop-solid); }
+  .binder { background: rgba(0, 0, 0, 0.26); border: 1px dashed rgba(255, 255, 255, 0.32); border-radius: 15px; padding: 12px 14px; font-weight: 700; font-size: 14px; }
 
   /* ── Coach ── */
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-  .big-btn { border-radius: 13px; padding: 13px 12px; font-size: 14.5px; display: flex; align-items: center; gap: 11px; text-align: left; }
-  #coach-card { scroll-margin-top: 84px; }
-  .marv { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 16px; align-items: start; }
-  .marv-tile {
-    width: 78px; height: 102px; background: var(--tile); border-radius: 15px; border: 1px solid var(--line-strong);
-    box-shadow: var(--shadow-raised), 0 0 0 4px var(--well);
-    display: flex; align-items: center; justify-content: center; overflow: hidden;
-  }
-  .marv-tile img { width: 100%; height: 100%; object-fit: contain; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .big-btn { border-radius: 16px; padding: 13px 12px; font-size: 14.5px; display: flex; align-items: center; gap: 12px; text-align: left; min-height: 60px; }
+  .big-btn .pot { --s: 26px; }
+  .coach { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 10px; align-items: start; scroll-margin-top: 16px; }
+  .coach-marv { width: 122px; max-width: none; margin-left: -12px; filter: drop-shadow(0 12px 14px rgba(0, 0, 0, 0.55)); animation: pop 0.35s ease both; }
   .say {
-    position: relative; min-width: 0; display: flex; flex-direction: column; gap: 10px;
-    background: var(--bubble); border: 1px solid var(--bubble-line); border-radius: 15px; padding: 13px 14px;
-    box-shadow: var(--shadow-raised), inset 0 1px 0 var(--hi);
+    position: relative; min-width: 0; align-self: start; display: flex; flex-direction: column; gap: 10px;
+    background: var(--bubble); color: var(--bubble-ink); border-radius: 22px; padding: 15px 16px;
+    box-shadow: inset 0 1px 0 #fff, 0 22px 44px -18px rgba(0, 0, 0, 0.9);
+    animation: pop 0.3s ease both;
   }
-  .say::before {
-    content: ""; position: absolute; left: -7px; top: 26px; width: 12px; height: 12px;
-    background: var(--bubble); border-left: 1px solid var(--bubble-line); border-bottom: 1px solid var(--bubble-line);
-    transform: rotate(45deg);
-  }
-  .say h3 { margin: 0; font-size: 17.5px; font-weight: 800; line-height: 1.25; text-wrap: balance; }
+  .say::before { content: ""; position: absolute; left: -7px; top: 64px; width: 16px; height: 16px; background: var(--bubble); transform: rotate(45deg); border-radius: 3px; }
+  .say h3 { margin: 0; font-family: var(--display); font-size: 18px; font-weight: 800; line-height: 1.2; letter-spacing: -0.015em; text-wrap: balance; }
   .say p { margin: 0; font-size: 14px; }
-  .option { border-top: 1px solid var(--bubble-line); padding-top: 10px; display: flex; flex-direction: column; gap: 5px; }
-  .option .who { display: flex; align-items: center; gap: 10px; font-weight: 800; flex-wrap: wrap; }
-  .steps { margin: 0; padding: 0; list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 9px; font-size: 14px; }
-  .steps li { counter-increment: step; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 11px; align-items: start; }
+  .say .hint { color: rgba(19, 41, 75, 0.66); }
+  .option { border-top: 1px solid var(--bubble-line); padding-top: 11px; display: flex; flex-direction: column; gap: 6px; }
+  .option .who { display: flex; align-items: center; gap: 11px; font-family: var(--display); font-weight: 700; flex-wrap: wrap; }
+  .option .pot { box-shadow: inset 0 -5px 8px rgba(0, 0, 0, 0.38), inset 0 2px 3px rgba(255, 255, 255, 0.25), 0 0 0 2.5px #fff, 0 0 0 4px rgba(19, 41, 75, 0.35), 0 4px 8px rgba(19, 41, 75, 0.3); }
+  .steps { margin: 0; padding: 0; list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 11px; font-size: 14px; }
+  .steps li { counter-increment: step; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start; color: var(--ink-2); }
   .steps li::before {
-    content: counter(step); width: 26px; height: 26px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 800;
-    background: linear-gradient(180deg, var(--sel-1), var(--sel-2)); color: var(--sel-fg);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 2px 5px var(--sel-glow);
+    content: counter(step); width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 13px; font-weight: 800;
+    background: linear-gradient(180deg, var(--wasabi-hi), var(--wasabi-lo)); color: var(--wasabi-ink);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 6px 14px -6px rgba(174, 210, 132, 0.6);
   }
-  .steps li span { padding-top: 3px; }
-  .draft {
-    background: linear-gradient(180deg, var(--warn-bg-1), var(--warn-bg-2)); color: var(--warn);
-    border: 1px solid var(--warn-line); border-radius: 13px; padding: 11px 14px; font-size: 12.5px; margin: 0;
-    box-shadow: var(--shadow-raised);
-  }
+  .steps li span { padding-top: 4px; }
+  .draft { background: var(--warn-wash); color: var(--warn); border: 1px solid var(--warn-line); border-radius: 18px; padding: 12px 15px; font-size: 12.5px; margin: 0; }
 
   /* ── Tinter reference ── */
-  .tinter { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 6px 13px; padding: 14px 0; border-top: 1px solid var(--line); align-items: start; }
+  .tinter { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 6px 13px; padding: 16px 0; border-top: 1px solid var(--hair); align-items: start; }
   .tinter:first-child { border-top: 0; padding-top: 2px; }
-  .tinter .pot { margin-top: 1px; }
-  .tinter h3 { margin: 0 0 6px; font-size: 15.5px; font-weight: 800; display: flex; gap: 9px; align-items: center; flex-wrap: wrap; }
-  .tinter dl {
-    margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 3px 12px; font-size: 12.5px;
-    background: var(--well); border: 1px solid var(--line); border-radius: 11px; padding: 9px 12px; box-shadow: var(--shadow-well);
-  }
-  .tinter dt { color: var(--muted); font-weight: 600; }
+  .tinter h3 { margin: 2px 0 8px; font-family: var(--display); font-size: 16px; font-weight: 700; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .tinter dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; font-size: 12.5px; background: var(--well); border: 1px solid var(--hair); border-radius: 14px; padding: 10px 13px; box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45); }
+  .tinter dt { color: var(--ink-3); font-weight: 600; }
   .tinter dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; }
-  .tinter p { margin: 7px 0 0; font-size: 12.5px; color: var(--muted); }
+  .tinter p { margin: 8px 0 0; font-size: 12.5px; color: var(--ink-2); }
 
-  details {
-    font-size: 12.5px; color: var(--muted);
-    background: linear-gradient(180deg, var(--surface), var(--surface-2)); border: 1px solid var(--line); border-radius: 14px;
-    padding: 12px 15px; box-shadow: var(--shadow-raised), inset 0 1px 0 var(--hi);
+  details { font-size: 12.5px; color: var(--ink-2); background: linear-gradient(180deg, var(--glass-1), var(--glass-2)); border: 1px solid var(--hair); border-radius: 18px; padding: 13px 16px; }
+  details summary { cursor: pointer; font-family: var(--display); font-weight: 700; color: var(--ink); font-size: 14px; }
+  details ul { margin: 10px 0 2px; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .foot { margin: 4px 0 0; text-align: center; font-size: 11px; color: var(--ink-3); letter-spacing: 0.12em; text-transform: uppercase; }
+
+  /* ── Floating dock ── */
+  .dock {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; pointer-events: none;
+    padding: 0 max(16px, env(safe-area-inset-right, 0px)) calc(14px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
   }
-  details summary { cursor: pointer; font-weight: 800; color: var(--fg); font-size: 13.5px; }
-  details ul { margin: 10px 0 2px; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
-  .foot { margin: 6px 0 0; text-align: center; font-size: 11.5px; color: var(--muted); letter-spacing: 0.04em; }
+  .dock-in {
+    pointer-events: auto; max-width: 448px; margin: 0 auto; display: flex; gap: 4px; padding: 6px; border-radius: 26px;
+    background: rgba(13, 27, 52, 0.84); -webkit-backdrop-filter: blur(18px) saturate(1.5); backdrop-filter: blur(18px) saturate(1.5);
+    border: 1px solid var(--hair-2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 18px 44px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+  .dock button {
+    flex: 1; border: 1px solid transparent; background: transparent; border-radius: 20px; padding: 9px 6px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 11.5px; font-weight: 700; color: var(--ink-3);
+    transition: transform 0.1s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .dock button svg { width: 24px; height: 24px; }
+  .dock button[aria-selected="true"] {
+    color: var(--wasabi-ink); border-color: rgba(255, 255, 255, 0.55);
+    background: linear-gradient(180deg, var(--wasabi-hi) 0%, var(--wasabi) 48%, var(--wasabi-lo) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 22px -6px rgba(174, 210, 132, 0.6);
+  }
 
+  /* ── Wider screens: show it as a device in the paint shop ── */
+  @media (min-width: 720px) {
+    .backdrop {
+      display: block; position: fixed; inset: -60px; z-index: 0;
+      background: var(--navy-0) url("images/shop.webp") center / cover no-repeat;
+      filter: blur(22px) brightness(0.55) saturate(1.25);
+    }
+    body { background-image: none; }
+    .app {
+      margin-top: 30px; border-radius: 40px 40px 0 0; overflow: hidden; min-height: calc(100vh - 30px);
+      border: 1px solid var(--hair-2); border-bottom: 0;
+      background: linear-gradient(180deg, var(--navy-1) 0%, var(--navy-0) 60%);
+      box-shadow: 0 0 0 10px rgba(6, 13, 27, 0.55), 0 40px 120px rgba(0, 0, 0, 0.8);
+    }
+  }
   @media (max-width: 360px) {
-    .row { grid-template-columns: 18px minmax(0, 1fr) 62px auto 34px; gap: 5px; }
-    .readout { min-width: 86px; font-size: 18px; }
-    .brand h1 { font-size: 19px; }
+    .card, .bench { padding: 15px; }
+    .row { grid-template-columns: 22px minmax(0, 1fr) 66px 34px; gap: 6px; }
+    .icon-btn { width: 34px; }
+    .readout { min-width: 92px; font-size: 20px; }
+    .hero h1 { font-size: 29px; }
+    .hero-marv { height: 170px; }
+    .qty input { font-size: 44px; }
+    .coach { grid-template-columns: 92px minmax(0, 1fr); }
+    .coach-marv { width: 102px; }
   }
 </style>
 </head>
 <body>
 
-<header class="top">
-  <div class="wrap">
-    <div class="top-row">
-      <div class="avatar"><img src="images/marv-focussed.png" alt=""></div>
-      <div class="brand">
-        <h1>MARV's Mix Bench</h1>
-        <p>Scale a recipe. Fix a mix.</p>
+<div class="backdrop" aria-hidden="true"></div>
+
+<div class="app">
+  <header class="hero">
+    <div class="hero-art" aria-hidden="true"></div>
+    <div class="wrap hero-in">
+      <div class="hero-text">
+        <span class="eyebrow">MARV's Mix Bench <span class="demo-pill">Demo</span></span>
+        <h1 id="hero-title">Scale a mix</h1>
+        <p id="hero-sub">Any recipe, any batch size.</p>
       </div>
-      <span class="demo-pill">Demo</span>
+      <img class="hero-marv" id="hero-marv" src="images/marv-mixing.webp" alt="MARV">
     </div>
-  </div>
-</header>
-<nav class="tabbar" aria-label="Tools">
-  <div class="wrap">
-    <div class="tabs" role="tablist">
-      <button class="tab" role="tab" id="tab-scale" aria-controls="panel-scale" aria-selected="true">Scale a mix</button>
-      <button class="tab" role="tab" id="tab-fix" aria-controls="panel-fix" aria-selected="false">Fix a mix</button>
-      <button class="tab" role="tab" id="tab-tinters" aria-controls="panel-tinters" aria-selected="false">Tinters</button>
-    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- ═══ SCALE A MIX ═══ -->
+    <section class="panel" id="panel-scale" role="tabpanel" aria-labelledby="tab-scale">
+
+      <div class="card">
+        <h2>The recipe you were sent <span class="tag" id="example-note">Made-up example</span></h2>
+        <div class="makes">
+          <label class="label" for="recipe-qty">This recipe makes</label>
+          <div class="inwell"><input id="recipe-qty" type="number" inputmode="decimal" min="1" step="any" value="250"><span>ml</span></div>
+        </div>
+        <div class="rows" id="rows"></div>
+        <div class="link-row">
+          <button class="ghost" id="add-row" type="button">+ Add tinter</button>
+          <button class="ghost" id="load-example" type="button">Load example</button>
+          <button class="ghost" id="clear-rows" type="button">Clear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>This job</h2>
+        <span class="label" id="need-label">I need</span>
+        <div class="stepper">
+          <button class="step" id="need-minus" type="button" aria-label="Less">&minus;</button>
+          <div class="qty">
+            <input id="need-qty" type="number" inputmode="decimal" min="1" step="any" value="50" aria-labelledby="need-label">
+            <span>ml</span>
+          </div>
+          <button class="step" id="need-plus" type="button" aria-label="More">+</button>
+        </div>
+        <div class="chips" id="need-chips">
+          <button class="chip" type="button" data-need="25">25</button>
+          <button class="chip" type="button" data-need="50">50</button>
+          <button class="chip" type="button" data-need="100">100</button>
+          <button class="chip" type="button" data-need="250">250</button>
+          <button class="chip" type="button" data-need="500">500</button>
+          <button class="chip" type="button" data-need="1000">1 L</button>
+        </div>
+        <span class="label" id="res-label">My scale reads to</span>
+        <div class="seg" id="res-chips" role="group" aria-labelledby="res-label">
+          <button type="button" data-res="1">1 g</button>
+          <button type="button" data-res="0.1">0.1 g</button>
+          <button type="button" data-res="0.01">0.01 g</button>
+        </div>
+      </div>
+
+      <div id="verdict" aria-live="polite"></div>
+
+      <div class="bench" id="result-card">
+        <h2 id="result-title">Your mix</h2>
+        <div class="mixbar-wrap" id="mixbar-wrap" hidden>
+          <div class="mixbar" id="mixbar"></div>
+          <small>Each tinter's share of the mix, by weight</small>
+        </div>
+        <div class="lines" id="lines"></div>
+      </div>
+
+      <details>
+        <summary>How the Bench decides</summary>
+        <ul>
+          <li>A scale can be out by half its smallest step. To keep that error under about 5%, each tinter must weigh at least ten steps: 10 g on a 1 g scale, 1 g on a 0.1 g scale.</li>
+          <li>Anything lighter is converted to millilitres using the density printed on the tin, for a syringe. Below 0.10 ml a 1 ml syringe is not accurate enough either.</li>
+          <li>Tinters are thick and some stays in the syringe. Use the same technique every time.</li>
+          <li>Most van scales read to 1 g, so that is the starting setting. Change it if yours reads finer.</li>
+          <li>Syringe sizes and the 0.10 ml limit are working assumptions until we confirm what technicians carry.</li>
+          <li>The example recipe uses invented numbers. It is not a real formulation.</li>
+        </ul>
+      </details>
+    </section>
+
+    <!-- ═══ FIX A MIX ═══ -->
+    <section class="panel" id="panel-fix" role="tabpanel" aria-labelledby="tab-fix" hidden>
+
+      <div class="card">
+        <h2>What are you mixing?</h2>
+        <div class="chips" id="family-chips">
+          <button class="chip" type="button" data-family="lightgrey">Light grey</button>
+          <button class="chip" type="button" data-family="darkgrey">Dark grey</button>
+          <button class="chip" type="button" data-family="green">Green</button>
+          <button class="chip" type="button" data-family="other">Something else</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Next to the target, your mix is</h2>
+        <div class="grid2" id="problem-grid">
+          <button class="big-btn" type="button" data-problem="light"><span class="pot cue-light"></span>Too light</button>
+          <button class="big-btn" type="button" data-problem="dark"><span class="pot cue-dark"></span>Too dark</button>
+          <button class="big-btn" type="button" data-problem="red"><span class="pot cue-red"></span>Too red</button>
+          <button class="big-btn" type="button" data-problem="green"><span class="pot cue-green"></span>Too green</button>
+          <button class="big-btn" type="button" data-problem="yellow"><span class="pot cue-yellow"></span>Too yellow</button>
+          <button class="big-btn" type="button" data-problem="blue"><span class="pot cue-blue"></span>Too blue</button>
+          <button class="big-btn" type="button" data-problem="bright"><span class="pot cue-bright"></span>Too bright</button>
+          <button class="big-btn" type="button" data-problem="dull"><span class="pot cue-dull"></span>Too dull</button>
+        </div>
+      </div>
+
+      <div class="coach" id="coach-card" aria-live="polite"></div>
+
+      <div class="card">
+        <h2>Every time</h2>
+        <ol class="steps">
+          <li><span>Make one change at a time.</span></li>
+          <li><span>Stir fully before you judge it.</span></li>
+          <li><span>Dab it next to the target and check it once it is dry.</span></li>
+          <li><span>Note what you added. The next job in this colour starts there.</span></li>
+        </ol>
+      </div>
+
+      <p class="draft"><strong>Draft guidance.</strong> Built from the notes on the tin labels and standard colour practice. Technical has not signed it off yet. It assumes the eleven tinters listed under Tinters.</p>
+    </section>
+
+    <!-- ═══ TINTERS ═══ -->
+    <section class="panel" id="panel-tinters" role="tabpanel" aria-labelledby="tab-tinters" hidden>
+      <div class="card">
+        <h2>The eleven tinters</h2>
+        <div id="tinter-list"></div>
+      </div>
+      <p class="hint">Vans carry either the old or the new tint system. Which one these eleven belong to is still to be confirmed. Codes, material numbers and densities are from the tin labels. The coloured pots are for finding the tin, not for judging colour. Strength for the two Phthalos and the two oxides comes from the feasibility report. The other strength ratings are a draft for Technical to confirm.</p>
+    </section>
+
+    <p class="foot">MARV's Mix Bench · demo build</p>
+  </main>
+</div>
+
+<nav class="dock" aria-label="Tools">
+  <div class="dock-in" role="tablist">
+    <button role="tab" id="tab-scale" aria-controls="panel-scale" aria-selected="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M7 20h10M5 7h14M5 7l-2.6 6a2.9 2.9 0 0 0 5.2 0L5 7zM19 7l-2.6 6a2.9 2.9 0 0 0 5.2 0L19 7z"/></svg>
+      Scale a mix
+    </button>
+    <button role="tab" id="tab-fix" aria-controls="panel-fix" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.3 6 10.6a6 6 0 0 1-12 0C6 9.3 12 3 12 3z"/><path d="M12 11v5M9.5 13.5h5"/></svg>
+      Fix a mix
+    </button>
+    <button role="tab" id="tab-tinters" aria-controls="panel-tinters" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="8" r="3.4"/><circle cx="17" cy="8" r="3.4"/><circle cx="12" cy="16.6" r="3.4"/></svg>
+      Tinters
+    </button>
   </div>
 </nav>
-
-<main class="wrap">
-
-  <!-- ═══ SCALE A MIX ═══ -->
-  <section class="panel" id="panel-scale" role="tabpanel" aria-labelledby="tab-scale">
-
-    <div class="card">
-      <h2>The recipe you were sent</h2>
-      <label class="field-line" for="recipe-qty">This recipe makes
-        <input class="num" id="recipe-qty" type="number" inputmode="decimal" min="1" step="any" value="250"> ml
-      </label>
-      <div class="rows" id="rows"></div>
-      <div class="link-row">
-        <button class="ghost" id="add-row" type="button">+ Add tinter</button>
-        <button class="ghost" id="load-example" type="button">Load example</button>
-        <button class="ghost" id="clear-rows" type="button">Clear</button>
-      </div>
-      <p class="hint" id="example-note">Example recipe with invented numbers. It is not a real formulation.</p>
-    </div>
-
-    <div class="card">
-      <h2>This job</h2>
-      <label class="field-line" for="need-qty">I need
-        <input class="num" id="need-qty" type="number" inputmode="decimal" min="1" step="any" value="50"> ml
-      </label>
-      <div class="chips" id="need-chips">
-        <button class="chip" type="button" data-need="25">25</button>
-        <button class="chip" type="button" data-need="50">50</button>
-        <button class="chip" type="button" data-need="100">100</button>
-        <button class="chip" type="button" data-need="250">250</button>
-        <button class="chip" type="button" data-need="500">500</button>
-        <button class="chip" type="button" data-need="1000">1 L</button>
-      </div>
-      <div class="field-line" id="res-label">My scale reads to</div>
-      <div class="chips" id="res-chips" role="group" aria-labelledby="res-label">
-        <button class="chip" type="button" data-res="1">1 g</button>
-        <button class="chip" type="button" data-res="0.1">0.1 g</button>
-        <button class="chip" type="button" data-res="0.01">0.01 g</button>
-      </div>
-    </div>
-
-    <div id="verdict" aria-live="polite"></div>
-
-    <div class="card" id="result-card">
-      <h2 id="result-title">Your mix</h2>
-      <div class="lines" id="lines"></div>
-    </div>
-
-    <details>
-      <summary>How the Bench decides</summary>
-      <ul>
-        <li>A scale can be out by half its smallest step. To keep that error under about 5%, each tinter must weigh at least ten steps: 10 g on a 1 g scale, 1 g on a 0.1 g scale.</li>
-        <li>Anything lighter is converted to millilitres using the density printed on the tin, for a syringe. Below 0.10 ml a 1 ml syringe is not accurate enough either.</li>
-        <li>Tinters are thick and some stays in the syringe. Use the same technique every time.</li>
-        <li>Most van scales read to 1 g, so that is the starting setting. Change it if yours reads finer.</li>
-        <li>Syringe sizes and the 0.10 ml limit are working assumptions until we confirm what technicians carry.</li>
-      </ul>
-    </details>
-  </section>
-
-  <!-- ═══ FIX A MIX ═══ -->
-  <section class="panel" id="panel-fix" role="tabpanel" aria-labelledby="tab-fix" hidden>
-
-    <div class="card">
-      <h2>What are you mixing?</h2>
-      <div class="chips" id="family-chips">
-        <button class="chip" type="button" data-family="lightgrey">Light grey</button>
-        <button class="chip" type="button" data-family="darkgrey">Dark grey</button>
-        <button class="chip" type="button" data-family="green">Green</button>
-        <button class="chip" type="button" data-family="other">Something else</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Next to the target, your mix is</h2>
-      <div class="grid2" id="problem-grid">
-        <button class="big-btn" type="button" data-problem="light"><span class="pot cue-light"></span>Too light</button>
-        <button class="big-btn" type="button" data-problem="dark"><span class="pot cue-dark"></span>Too dark</button>
-        <button class="big-btn" type="button" data-problem="red"><span class="pot cue-red"></span>Too red</button>
-        <button class="big-btn" type="button" data-problem="green"><span class="pot cue-green"></span>Too green</button>
-        <button class="big-btn" type="button" data-problem="yellow"><span class="pot cue-yellow"></span>Too yellow</button>
-        <button class="big-btn" type="button" data-problem="blue"><span class="pot cue-blue"></span>Too blue</button>
-        <button class="big-btn" type="button" data-problem="bright"><span class="pot cue-bright"></span>Too bright</button>
-        <button class="big-btn" type="button" data-problem="dull"><span class="pot cue-dull"></span>Too dull</button>
-      </div>
-    </div>
-
-    <div class="card" id="coach-card" aria-live="polite"></div>
-
-    <div class="card">
-      <h2>Every time</h2>
-      <ol class="steps">
-        <li><span>Make one change at a time.</span></li>
-        <li><span>Stir fully before you judge it.</span></li>
-        <li><span>Dab it next to the target and check it once it is dry.</span></li>
-        <li><span>Note what you added. The next job in this colour starts there.</span></li>
-      </ol>
-    </div>
-
-    <p class="draft"><strong>Draft guidance.</strong> Built from the notes on the tin labels and standard colour practice. Technical has not signed it off yet. It assumes the eleven tinters listed under Tinters.</p>
-  </section>
-
-  <!-- ═══ TINTERS ═══ -->
-  <section class="panel" id="panel-tinters" role="tabpanel" aria-labelledby="tab-tinters" hidden>
-    <div class="card">
-      <h2>The eleven tinters</h2>
-      <div id="tinter-list"></div>
-    </div>
-    <p class="hint">Vans carry either the old or the new tint system. Which one these eleven belong to is still to be confirmed. Codes, material numbers and densities are from the tin labels. The coloured pots are for finding the tin, not for judging colour. Strength for the two Phthalos and the two oxides comes from the feasibility report. The other strength ratings are a draft for Technical to confirm.</p>
-  </section>
-
-  <p class="foot">MARV's Mix Bench · demo build</p>
-</main>
 
 <script>
 (function () {
@@ -628,6 +581,12 @@
     ok:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
     warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 6v8"/><path d="M12 18.2v.1"/></svg>',
     stop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10"/><path d="M17 7L7 17"/></svg>'
+  };
+
+  var HERO = {
+    scale:   { title: "Scale a mix", sub: "Any recipe, any batch size.",   img: "images/marv-mixing.webp" },
+    fix:     { title: "Fix a mix",   sub: "Tell MARV what looks off.",     img: "images/marv-thinking.webp" },
+    tinters: { title: "Tinters",     sub: "The eleven tins at a glance.",  img: "images/marv-close.webp" }
   };
 
   var SYRINGE_MIN_ML = 0.10;
@@ -664,7 +623,7 @@
   }
   function pot(color, cls) {
     var p = el("span", "pot" + (cls ? " " + cls : ""));
-    p.style.background = color;
+    p.style.backgroundColor = color;
     return p;
   }
 
@@ -736,9 +695,10 @@
         if (t.id === r.t) o.selected = true;
         sel.appendChild(o);
       });
-      sel.addEventListener("change", function () { r.t = sel.value; p.style.background = T[r.t].dot; touched(); renderResults(); });
+      sel.addEventListener("change", function () { r.t = sel.value; p.style.backgroundColor = T[r.t].dot; touched(); renderResults(); });
 
-      var inp = el("input", "num");
+      var well = el("div", "inwell");
+      var inp = el("input");
       inp.id = "row-g-" + i;
       inp.type = "number";
       inp.inputMode = "decimal";
@@ -748,15 +708,15 @@
       inp.placeholder = "0";
       inp.setAttribute("aria-label", "Grams of tinter " + (i + 1));
       inp.addEventListener("input", function () { r.g = parseFloat(inp.value) || 0; touched(); renderResults(); });
-
-      var unit = el("span", "unit", "g");
+      well.appendChild(inp);
+      well.appendChild(el("span", null, "g"));
 
       var del = el("button", "icon-btn", "×");
       del.type = "button";
       del.setAttribute("aria-label", "Remove tinter " + (i + 1));
       del.addEventListener("click", function () { state.rows.splice(i, 1); touched(); renderRows(); renderResults(); });
 
-      row.appendChild(p); row.appendChild(sel); row.appendChild(inp); row.appendChild(unit); row.appendChild(del);
+      row.appendChild(p); row.appendChild(sel); row.appendChild(well); row.appendChild(del);
       box.appendChild(row);
     });
     if (state.rows.length === 0) {
@@ -770,22 +730,34 @@
     var c = calc();
     var verdict = $("verdict");
     var lines = $("lines");
+    var bar = $("mixbar");
     verdict.textContent = "";
     lines.textContent = "";
+    bar.textContent = "";
 
     document.querySelectorAll("#need-chips .chip").forEach(function (b) {
       b.setAttribute("aria-pressed", String(parseFloat(b.dataset.need) === state.need));
     });
-    document.querySelectorAll("#res-chips .chip").forEach(function (b) {
+    document.querySelectorAll("#res-chips button").forEach(function (b) {
       b.setAttribute("aria-pressed", String(parseFloat(b.dataset.res) === state.res));
     });
 
     if (!c) {
       $("result-title").textContent = "Your mix";
-      lines.appendChild(el("p", "hint", "Enter the recipe and the amount you need. The weights appear here."));
+      $("mixbar-wrap").hidden = true;
+      lines.appendChild(el("p", "why", "Enter the recipe and the amount you need. The weights appear here."));
       return;
     }
     $("result-title").textContent = "Your mix for " + fmtQty(state.need);
+    $("mixbar-wrap").hidden = false;
+    c.lines.forEach(function (l) {
+      var seg = el("i");
+      seg.style.flexGrow = String(l.g);
+      seg.style.flexBasis = "0";
+      seg.style.backgroundColor = l.t.dot;
+      seg.title = l.t.name;
+      bar.appendChild(seg);
+    });
 
     var nSyr = c.lines.filter(function (l) { return l.method === "syringe"; }).length;
     var nSmall = c.lines.filter(function (l) { return l.method === "small"; }).length;
@@ -834,8 +806,9 @@
     verdict.appendChild(box);
 
     var dp = resDecimals(state.res);
-    c.lines.forEach(function (l) {
+    c.lines.forEach(function (l, idx) {
       var line = el("div", "line");
+      line.style.animationDelay = (idx * 45) + "ms";
       var info = el("div", "info");
       info.appendChild(el("span", "name", l.t.name));
       info.appendChild(el("span", "code", l.t.code));
@@ -877,6 +850,14 @@
     $("need-qty").value = String(ml);
     renderResults();
   }
+  function stepFor(v) { return v < 50 ? 5 : v < 100 ? 10 : v < 250 ? 25 : v < 1000 ? 50 : 100; }
+  function nudge(dir) {
+    var v = state.need > 0 ? state.need : 0;
+    var next;
+    if (dir > 0) { var s = stepFor(v); next = Math.floor(v / s + 1e-9) * s + s; }
+    else { var s2 = stepFor(v - 0.001); next = Math.ceil(v / s2 - 1e-9) * s2 - s2; }
+    setNeed(Math.max(5, Math.min(5000, next)));
+  }
 
   // ── Coach rules (draft, pending Technical sign-off) ──
   var GREYS = { lightgrey: true, darkgrey: true };
@@ -903,7 +884,7 @@
       case "bright":
         return { head: "Knock it back with Burnt Umber", first: ["BUX", green ? "Makes a natural, muted green." : "Neutralises and warms other colours."], second: ["LBX", "Greys the colour down and darkens it at the same time."], note: grey ? "On a grey, name the cast if you can see one: too blue, too green, too red or too yellow." : null };
       case "dull":
-        return { head: "You can't take dullness out", plain: "Nothing on the van removes it. Add more of the clean tinter that carries the colour to lift it. If it is a long way off, start again, and make a batch big enough to measure properly.", list: ["OYX", "QRX", "PBX", "PGX", "QVX"], sprite: "images/marv-wincing.png" };
+        return { head: "You can't take dullness out", plain: "Nothing on the van removes it. Add more of the clean tinter that carries the colour to lift it. If it is a long way off, start again, and make a batch big enough to measure properly.", list: ["OYX", "QRX", "PBX", "PGX", "QVX"], sprite: "images/marv-close.webp" };
     }
     return null;
   }
@@ -936,12 +917,10 @@
     card.textContent = "";
     var a = state.problem ? advice(state.family, state.problem) : null;
 
-    var wrap = el("div", "marv");
-    var tile = el("div", "marv-tile");
     var img = document.createElement("img");
+    img.className = "coach-marv";
     img.alt = "MARV";
-    img.src = a ? (a.sprite || "images/marv-confident.png") : "images/marv-focussed.png";
-    tile.appendChild(img);
+    img.src = a ? (a.sprite || "images/marv-mixing.webp") : "images/marv-thinking.webp";
     var say = el("div", "say");
 
     if (!a) {
@@ -959,8 +938,7 @@
       }
       if (a.note) say.appendChild(el("p", "hint", a.note));
     }
-    wrap.appendChild(tile); wrap.appendChild(say);
-    card.appendChild(wrap);
+    card.appendChild(img); card.appendChild(say);
   }
 
   // ── Tinter reference ──
@@ -989,17 +967,18 @@
       $("tab-" + n).setAttribute("aria-selected", String(n === name));
       $("panel-" + n).hidden = n !== name;
     });
-    if (scroll) {
-      var bar = document.querySelector(".tabbar");
-      var top = bar.getBoundingClientRect().top;
-      if (top <= 1) window.scrollTo(0, document.querySelector("main").offsetTop - bar.offsetHeight);
-    }
+    $("hero-title").textContent = HERO[name].title;
+    $("hero-sub").textContent = HERO[name].sub;
+    $("hero-marv").src = HERO[name].img;
+    if (scroll) window.scrollTo(0, 0);
     try { localStorage.setItem("mixbench-tab", name); } catch (e) { /* storage unavailable */ }
   }
   TABS.forEach(function (n) { $("tab-" + n).addEventListener("click", function () { showTab(n, true); }); });
 
   $("recipe-qty").addEventListener("input", function (e) { state.recipeQty = parseFloat(e.target.value) || 0; touched(); renderResults(); });
   $("need-qty").addEventListener("input", function (e) { state.need = parseFloat(e.target.value) || 0; renderResults(); });
+  $("need-minus").addEventListener("click", function () { nudge(-1); });
+  $("need-plus").addEventListener("click", function () { nudge(1); });
   $("need-chips").addEventListener("click", function (e) {
     var b = e.target.closest("[data-need]");
     if (b) setNeed(parseFloat(b.dataset.need));
