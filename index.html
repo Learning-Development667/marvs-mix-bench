@@ -492,7 +492,7 @@
     <div class="card">
       <h2>The recipe you were sent</h2>
       <label class="field-line" for="recipe-qty">This recipe makes
-        <input class="num" id="recipe-qty" type="number" inputmode="decimal" min="1" step="any" value="500"> ml
+        <input class="num" id="recipe-qty" type="number" inputmode="decimal" min="1" step="any" value="250"> ml
       </label>
       <div class="rows" id="rows"></div>
       <div class="link-row">
@@ -506,7 +506,7 @@
     <div class="card">
       <h2>This job</h2>
       <label class="field-line" for="need-qty">I need
-        <input class="num" id="need-qty" type="number" inputmode="decimal" min="1" step="any" value="100"> ml
+        <input class="num" id="need-qty" type="number" inputmode="decimal" min="1" step="any" value="50"> ml
       </label>
       <div class="chips" id="need-chips">
         <button class="chip" type="button" data-need="25">25</button>
@@ -537,7 +537,8 @@
         <li>A scale can be out by half its smallest step. To keep that error under about 5%, each tinter must weigh at least ten steps: 10 g on a 1 g scale, 1 g on a 0.1 g scale.</li>
         <li>Anything lighter is converted to millilitres using the density printed on the tin, for a syringe. Below 0.10 ml a 1 ml syringe is not accurate enough either.</li>
         <li>Tinters are thick and some stays in the syringe. Use the same technique every time.</li>
-        <li>Syringe sizes and the 0.10 ml limit are working assumptions until the stockroom confirms what technicians carry.</li>
+        <li>Most van scales read to 1 g, so that is the starting setting. Change it if yours reads finer.</li>
+        <li>Syringe sizes and the 0.10 ml limit are working assumptions until we confirm what technicians carry.</li>
       </ul>
     </details>
   </section>
@@ -581,16 +582,16 @@
       </ol>
     </div>
 
-    <p class="draft"><strong>Draft guidance.</strong> Built from the notes on the tin labels and standard colour practice. Technical has not signed it off yet.</p>
+    <p class="draft"><strong>Draft guidance.</strong> Built from the notes on the tin labels and standard colour practice. Technical has not signed it off yet. It assumes the eleven tinters listed under Tinters.</p>
   </section>
 
   <!-- ═══ TINTERS ═══ -->
   <section class="panel" id="panel-tinters" role="tabpanel" aria-labelledby="tab-tinters" hidden>
     <div class="card">
-      <h2>The eleven tinters on the van</h2>
+      <h2>The eleven tinters</h2>
       <div id="tinter-list"></div>
     </div>
-    <p class="hint">Codes, material numbers and densities are from the tin labels. The coloured pots are for finding the tin, not for judging colour. Strength for the two Phthalos and the two oxides comes from the feasibility report. The other strength ratings are a draft for Technical to confirm.</p>
+    <p class="hint">Vans carry either the old or the new tint system. Which one these eleven belong to is still to be confirmed. Codes, material numbers and densities are from the tin labels. The coloured pots are for finding the tin, not for judging colour. Strength for the two Phthalos and the two oxides comes from the feasibility report. The other strength ratings are a draft for Technical to confirm.</p>
   </section>
 
   <p class="foot">MARV's Mix Bench · demo build</p>
@@ -631,21 +632,23 @@
 
   var SYRINGE_MIN_ML = 0.10;
   var SYRINGES = [1, 3, 5, 10, 20];
+  var MAX_TYPICAL_ML = 1000;   // largest batch HQ normally issues a recipe for
+  var FINER_SCALES = [0.1, 0.01];
 
   var EXAMPLE = {
-    recipeQty: 500,
+    recipeQty: 250,
     rows: [
-      { t: "TWX", g: 22 },
-      { t: "LBX", g: 14 },
-      { t: "BUX", g: 3.2 },
-      { t: "PBX", g: 1.6 }
+      { t: "TWX", g: 11 },
+      { t: "LBX", g: 7 },
+      { t: "BUX", g: 1.6 },
+      { t: "PBX", g: 0.8 }
     ]
   };
 
   var state = {
     recipeQty: EXAMPLE.recipeQty,
-    need: 100,
-    res: 0.1,
+    need: 50,
+    res: 1,
     rows: EXAMPLE.rows.map(function (r) { return { t: r.t, g: r.g }; }),
     isExample: true,
     family: "lightgrey",
@@ -702,9 +705,15 @@
       }
       return { t: t, g: g, ml: ml, method: method, syringe: syringe, stockOk: g * 10 >= thr - 1e-9 };
     });
+    var minG = Math.min.apply(null, lines.map(function (l) { return l.g; }));
+    var finerRes = null;
+    FINER_SCALES.forEach(function (r) {
+      if (finerRes === null && r < state.res && minG >= r * 10 - 1e-9) finerRes = r;
+    });
     return {
       lines: lines,
       thr: thr,
+      finerRes: finerRes,
       weighMin: roundUpNice(state.recipeQty * weighFactor),
       syringeMin: roundUpNice(state.recipeQty * syringeFactor)
     };
@@ -782,6 +791,8 @@
     var nSmall = c.lines.filter(function (l) { return l.method === "small"; }).length;
     var scaleName = state.res + " g scale";
     var kind, headText, bodyText, actions = [];
+    var bigBatchOk = c.weighMin <= MAX_TYPICAL_ML;
+    var finer = c.finerRes ? " A scale that reads to " + c.finerRes + " g could weigh every tinter at this size." : "";
 
     if (nSyr === 0 && nSmall === 0) {
       kind = "ok";
@@ -790,14 +801,18 @@
     } else if (nSmall === 0) {
       kind = "warn";
       headText = nSyr + (nSyr === 1 ? " tinter is" : " tinters are") + " too light to weigh at this size";
-      bodyText = "Measure " + (nSyr === 1 ? "it" : "them") + " by syringe, or make " + fmtQty(c.weighMin) + " and weigh everything on a " + scaleName + ".";
-      actions.push(c.weighMin);
+      bodyText = "Measure " + (nSyr === 1 ? "it" : "them") + " by syringe" +
+        (bigBatchOk ? ", or make " + fmtQty(c.weighMin) + " and weigh everything on a " + scaleName + "." : ".") + finer;
+      if (bigBatchOk) actions.push(c.weighMin);
     } else {
       kind = "stop";
       headText = nSmall + (nSmall === 1 ? " tinter is" : " tinters are") + " too small to measure at this size";
-      bodyText = "The smallest batch that works with a syringe is " + fmtQty(c.syringeMin) + ". To weigh everything on a " + scaleName + ", make " + fmtQty(c.weighMin) + ".";
+      bodyText = c.weighMin === c.syringeMin
+        ? "The smallest batch you can measure properly is " + fmtQty(c.syringeMin) + "."
+        : "The smallest batch that works with a syringe is " + fmtQty(c.syringeMin) + "." +
+          (bigBatchOk ? " To weigh everything on a " + scaleName + ", make " + fmtQty(c.weighMin) + "." : "") + finer;
       actions.push(c.syringeMin);
-      if (c.weighMin !== c.syringeMin) actions.push(c.weighMin);
+      if (bigBatchOk && c.weighMin !== c.syringeMin) actions.push(c.weighMin);
     }
     var box = el("div", "verdict " + kind);
     var icon = el("div", "icon");
