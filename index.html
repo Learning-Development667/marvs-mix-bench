@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MARV's Mix Bench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap">
+<style>
+  /* Layout: one phone-width column. Navy brand band on top, three tabs, then a
+     working bench: inputs first, the answer underneath. Chrome stays neutral grey
+     so nothing on screen tints how a colour is judged. */
+  :root {
+    --bg: #e9ebee;
+    --surface: #f5f6f8;
+    --raised: #ffffff;
+    --line: #d0d5db;
+    --fg: #18212e;
+    --muted: #586374;
+    --brand: #13294b;
+    --brand-fg: #ffffff;
+    --brand-soft: rgba(255, 255, 255, 0.72);
+    --accent: #aed284;
+    --btn-bg: #13294b;
+    --btn-fg: #ffffff;
+    --ok: #256b31;
+    --ok-bg: #dcefdc;
+    --warn: #7a4e00;
+    --warn-bg: #f7e8c6;
+    --stop: #9c2c1a;
+    --stop-bg: #f7ddd7;
+    --tile: #ffffff;
+    --dot-ring: rgba(0, 0, 0, 0.28);
+    --focus: #2563a8;
+    --font: "Open Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14171b;
+      --surface: #1c2026;
+      --raised: #252a31;
+      --line: #3a414b;
+      --fg: #e7eaee;
+      --muted: #9da6b3;
+      --brand: #13294b;
+      --brand-fg: #ffffff;
+      --brand-soft: rgba(255, 255, 255, 0.72);
+      --accent: #aed284;
+      --btn-bg: #aed284;
+      --btn-fg: #13294b;
+      --ok: #93d49d;
+      --ok-bg: #1c3222;
+      --warn: #e8c070;
+      --warn-bg: #3a2e14;
+      --stop: #f2a092;
+      --stop-bg: #3e211b;
+      --tile: #ffffff;
+      --dot-ring: rgba(255, 255, 255, 0.4);
+      --focus: #7fb2ee;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14171b;
+    --surface: #1c2026;
+    --raised: #252a31;
+    --line: #3a414b;
+    --fg: #e7eaee;
+    --muted: #9da6b3;
+    --brand: #13294b;
+    --brand-fg: #ffffff;
+    --brand-soft: rgba(255, 255, 255, 0.72);
+    --accent: #aed284;
+    --btn-bg: #aed284;
+    --btn-fg: #13294b;
+    --ok: #93d49d;
+    --ok-bg: #1c3222;
+    --warn: #e8c070;
+    --warn-bg: #3a2e14;
+    --stop: #f2a092;
+    --stop-bg: #3e211b;
+    --tile: #ffffff;
+    --dot-ring: rgba(255, 255, 255, 0.4);
+    --focus: #7fb2ee;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .wrap {
+    max-width: 540px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  /* Brand band */
+  .top {
+    background: var(--brand);
+    color: var(--brand-fg);
+    margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+    padding-top: calc(env(safe-area-inset-top, 0px) + 14px);
+    padding-bottom: 0;
+  }
+  .top-row { display: flex; align-items: center; gap: 10px; }
+  .top h1 { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
+  .demo-pill {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    background: var(--accent); color: #13294b; padding: 3px 8px; border-radius: 999px;
+  }
+  .top p { margin: 2px 0 0; font-size: 12.5px; color: var(--brand-soft); }
+
+  .tabs { display: flex; gap: 4px; margin-top: 14px; }
+  .tab {
+    flex: 1; border: 0; background: transparent; color: var(--brand-soft);
+    padding: 11px 6px 10px; font-size: 14px; font-weight: 700; cursor: pointer;
+    border-bottom: 3px solid transparent; border-radius: 6px 6px 0 0;
+  }
+  .tab[aria-selected="true"] { color: var(--brand-fg); border-bottom-color: var(--accent); }
+
+  main { padding-block: 16px 40px; display: flex; flex-direction: column; gap: 16px; }
+  .panel { display: flex; flex-direction: column; gap: 16px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .card h2 {
+    margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.09em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .hint { margin: 0; font-size: 12.5px; color: var(--muted); }
+
+  .field-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: 600; }
+  .num {
+    width: 92px; padding: 9px 10px; font-size: 16px; font-weight: 700;
+    background: var(--raised); border: 1px solid var(--line); border-radius: 8px;
+    font-variant-numeric: tabular-nums; text-align: right;
+  }
+  select.pick {
+    min-width: 0; width: 100%; padding: 9px 8px; font-size: 16px;
+    background: var(--raised); border: 1px solid var(--line); border-radius: 8px;
+  }
+  .rows { display: flex; flex-direction: column; gap: 8px; }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) 84px auto 36px; gap: 6px; align-items: center; }
+  .row .num { width: 100%; }
+  .unit { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .icon-btn {
+    width: 36px; height: 38px; border: 1px solid var(--line); background: var(--raised);
+    border-radius: 8px; cursor: pointer; font-size: 18px; line-height: 1; color: var(--muted);
+  }
+  .link-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ghost {
+    border: 1px solid var(--line); background: var(--raised); border-radius: 8px;
+    padding: 8px 12px; font-size: 13.5px; font-weight: 700; cursor: pointer;
+  }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    border: 1px solid var(--line); background: var(--raised); border-radius: 999px;
+    padding: 7px 13px; font-size: 13.5px; font-weight: 700; cursor: pointer;
+    font-variant-numeric: tabular-nums;
+  }
+  .chip[aria-pressed="true"] { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+
+  /* Verdict banner */
+  .verdict { border-radius: 12px; padding: 13px 14px; display: flex; flex-direction: column; gap: 10px; border: 1px solid transparent; }
+  .verdict strong { font-size: 15.5px; }
+  .verdict p { margin: 0; font-size: 13.5px; }
+  .verdict.ok { background: var(--ok-bg); color: var(--ok); border-color: var(--ok); }
+  .verdict.warn { background: var(--warn-bg); color: var(--warn); border-color: var(--warn); }
+  .verdict.stop { background: var(--stop-bg); color: var(--stop); border-color: var(--stop); }
+  .verdict .ghost { color: var(--fg); align-self: flex-start; }
+
+  /* Result lines */
+  .lines { display: flex; flex-direction: column; }
+  .line { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 4px 10px; padding: 11px 0; border-top: 1px solid var(--line); align-items: center; }
+  .line:first-child { border-top: 0; padding-top: 2px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 1.5px var(--dot-ring); }
+  .line .name { font-weight: 700; min-width: 0; }
+  .line .code { display: block; font-size: 11.5px; font-weight: 400; color: var(--muted); }
+  .amount { text-align: right; font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .amount small { font-size: 12px; font-weight: 600; color: var(--muted); display: block; }
+  .line .why { grid-column: 2 / -1; font-size: 12.5px; color: var(--muted); margin: 0; }
+  .pill { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; margin-top: 3px; }
+  .pill.ok { background: var(--ok-bg); color: var(--ok); }
+  .pill.warn { background: var(--warn-bg); color: var(--warn); }
+  .pill.stop { background: var(--stop-bg); color: var(--stop); }
+  .binder { border-top: 1px solid var(--line); padding-top: 11px; font-weight: 700; }
+
+  /* Coach */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .big-btn {
+    border: 1px solid var(--line); background: var(--raised); border-radius: 10px;
+    padding: 13px 10px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center;
+  }
+  .big-btn[aria-pressed="true"] { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+  .marv { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; align-items: start; }
+  .marv-tile { width: 64px; height: 84px; background: var(--tile); border-radius: 10px; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .marv-tile img { width: 100%; height: 100%; object-fit: contain; }
+  .say { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .say h3 { margin: 0; font-size: 18px; font-weight: 800; text-wrap: balance; }
+  .say p { margin: 0; font-size: 14px; }
+  .option { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .option .who { display: flex; align-items: center; gap: 8px; font-weight: 700; flex-wrap: wrap; }
+  .rules { margin: 0; padding-left: 18px; font-size: 13.5px; display: flex; flex-direction: column; gap: 4px; }
+  .draft { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn); border-radius: 10px; padding: 9px 12px; font-size: 12.5px; margin: 0; }
+
+  /* Tinter reference */
+  .tinter { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 4px 10px; padding: 11px 0; border-top: 1px solid var(--line); align-items: start; }
+  .tinter:first-child { border-top: 0; padding-top: 2px; }
+  .tinter .dot { margin-top: 4px; }
+  .tinter h3 { margin: 0; font-size: 15px; font-weight: 700; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .tinter dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1px 10px; font-size: 12.5px; }
+  .tinter dt { color: var(--muted); }
+  .tinter dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .tinter p { margin: 3px 0 0; font-size: 12.5px; color: var(--muted); }
+
+  details { font-size: 12.5px; color: var(--muted); }
+  details summary { cursor: pointer; font-weight: 700; color: var(--fg); }
+  details ul { margin: 8px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+
+  @media (max-width: 360px) {
+    .row { grid-template-columns: minmax(0, 1fr) 72px auto 36px; }
+    .amount { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-row">
+      <h1>MARV's Mix Bench</h1>
+      <span class="demo-pill">Demo</span>
+    </div>
+    <p>Scale a recipe to the job. Fix a mix that is off.</p>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-scale" aria-controls="panel-scale" aria-selected="true">Scale a mix</button>
+      <button class="tab" role="tab" id="tab-fix" aria-controls="panel-fix" aria-selected="false">Fix a mix</button>
+      <button class="tab" role="tab" id="tab-tinters" aria-controls="panel-tinters" aria-selected="false">Tinters</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ═══ SCALE A MIX ═══ -->
+  <section class="panel" id="panel-scale" role="tabpanel" aria-labelledby="tab-scale">
+
+    <div class="card">
+      <h2>The recipe you were sent</h2>
+      <label class="field-line" for="recipe-qty">This recipe makes
+        <input class="num" id="recipe-qty" type="number" inputmode="decimal" min="1" step="any" value="500"> ml
+      </label>
+      <div class="rows" id="rows"></div>
+      <div class="link-row">
+        <button class="ghost" id="add-row" type="button">+ Add tinter</button>
+        <button class="ghost" id="load-example" type="button">Load example</button>
+        <button class="ghost" id="clear-rows" type="button">Clear</button>
+      </div>
+      <p class="hint" id="example-note">Example recipe with invented numbers. It is not a real formulation.</p>
+    </div>
+
+    <div class="card">
+      <h2>This job</h2>
+      <label class="field-line" for="need-qty">I need
+        <input class="num" id="need-qty" type="number" inputmode="decimal" min="1" step="any" value="100"> ml
+      </label>
+      <div class="chips" id="need-chips">
+        <button class="chip" type="button" data-need="25">25</button>
+        <button class="chip" type="button" data-need="50">50</button>
+        <button class="chip" type="button" data-need="100">100</button>
+        <button class="chip" type="button" data-need="250">250</button>
+        <button class="chip" type="button" data-need="500">500</button>
+        <button class="chip" type="button" data-need="1000">1 L</button>
+      </div>
+      <div class="field-line" id="res-label">My scale reads to</div>
+      <div class="chips" id="res-chips" role="group" aria-labelledby="res-label">
+        <button class="chip" type="button" data-res="1">1 g</button>
+        <button class="chip" type="button" data-res="0.1">0.1 g</button>
+        <button class="chip" type="button" data-res="0.01">0.01 g</button>
+      </div>
+    </div>
+
+    <div id="verdict" aria-live="polite"></div>
+
+    <div class="card" id="result-card">
+      <h2 id="result-title">Your mix</h2>
+      <div class="lines" id="lines"></div>
+    </div>
+
+    <details>
+      <summary>How the Bench decides</summary>
+      <ul>
+        <li>A scale can be out by half its smallest step. To keep that error under about 5%, each tinter must weigh at least ten steps: 10 g on a 1 g scale, 1 g on a 0.1 g scale.</li>
+        <li>Anything lighter is converted to millilitres using the density printed on the tin, for a syringe. Below 0.10 ml a 1 ml syringe is not accurate enough either.</li>
+        <li>Tinters are thick and some stays in the syringe. Use the same technique every time.</li>
+        <li>Syringe sizes and the 0.10 ml limit are working assumptions until the stockroom confirms what technicians carry.</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- ═══ FIX A MIX ═══ -->
+  <section class="panel" id="panel-fix" role="tabpanel" aria-labelledby="tab-fix" hidden>
+
+    <div class="card">
+      <h2>What are you mixing?</h2>
+      <div class="chips" id="family-chips">
+        <button class="chip" type="button" data-family="lightgrey">Light grey</button>
+        <button class="chip" type="button" data-family="darkgrey">Dark grey</button>
+        <button class="chip" type="button" data-family="green">Green</button>
+        <button class="chip" type="button" data-family="other">Something else</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Next to the target, your mix is</h2>
+      <div class="grid2" id="problem-grid">
+        <button class="big-btn" type="button" data-problem="light">Too light</button>
+        <button class="big-btn" type="button" data-problem="dark">Too dark</button>
+        <button class="big-btn" type="button" data-problem="red">Too red</button>
+        <button class="big-btn" type="button" data-problem="green">Too green</button>
+        <button class="big-btn" type="button" data-problem="yellow">Too yellow</button>
+        <button class="big-btn" type="button" data-problem="blue">Too blue</button>
+        <button class="big-btn" type="button" data-problem="bright">Too bright</button>
+        <button class="big-btn" type="button" data-problem="dull">Too dull</button>
+      </div>
+    </div>
+
+    <div class="card" id="coach-card" aria-live="polite"></div>
+
+    <div class="card">
+      <h2>Every time</h2>
+      <ul class="rules">
+        <li>Make one change at a time.</li>
+        <li>Stir fully before you judge it.</li>
+        <li>Dab it next to the target and check it once it is dry.</li>
+        <li>Note what you added. The next job in this colour starts there.</li>
+      </ul>
+    </div>
+
+    <p class="draft"><strong>Draft guidance.</strong> Built from the notes on the tin labels and standard colour practice. Technical has not signed it off yet.</p>
+  </section>
+
+  <!-- ═══ TINTERS ═══ -->
+  <section class="panel" id="panel-tinters" role="tabpanel" aria-labelledby="tab-tinters" hidden>
+    <div class="card">
+      <h2>The eleven tinters on the van</h2>
+      <div id="tinter-list"></div>
+    </div>
+    <p class="hint">Codes, material numbers and densities are from the tin labels. The coloured dots are for finding the tin, not for judging colour. Strength for the two Phthalos and the two oxides comes from the feasibility report. The other strength ratings are a draft for Technical to confirm.</p>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  // ── Tinter data: Chroma-Chem 844, from the tin labels (report Appendix A) ──
+  var TINTERS = [
+    { id: "OYX", name: "Organic Yellow",       code: "844-2852 OYX", mat: "11000817", density: 1101, group: "Yellows and golds",            strength: "medium", dot: "#f2c417", note: "Clean, bright yellow." },
+    { id: "MYX", name: "LF Medium Yellow",     code: "844-2565 MYX", mat: "11000169", density: 1190, group: "Yellows and golds",            strength: "medium", dot: "#f0a81c", note: "Clean yellow, a little warmer." },
+    { id: "YOX", name: "Yellow Oxide",         code: "844-1871 YOX", mat: "11000160", density: 1643, group: "Yellows, browns and earths",   strength: "gentle", dot: "#c8962e", note: "Bridges the yellows and the earths. With Red Oxide it makes sandy ochres." },
+    { id: "QRX", name: "Quinacridone Red",     code: "844-0461 QRX", mat: "11000129", density: 1042, group: "Reds and pinks",               strength: "medium", dot: "#c2264b", note: "Clean red." },
+    { id: "ROX", name: "Red Oxide",            code: "844-1071 ROX", mat: "11000144", density: 1955, group: "Reds, browns and earths",      strength: "gentle", dot: "#8e3b26", note: "Earthy red. Two tins in stock, density 1955 and 1953." },
+    { id: "BUX", name: "Burnt Umber",          code: "844-1362 BUX", mat: "11000151", density: 1406, group: "Browns and earths",            strength: "medium", dot: "#5b3a25", note: "Neutralises and warms other colours. With Phthalo Green it makes natural muted greens." },
+    { id: "PBX", name: "Phthalo Blue",         code: "844-7272 PBX", mat: "11000196", density: 1039, group: "Blues, teals and neutrals",    strength: "vstrong", dot: "#17479e", note: "The only blue on the van. With Phthalo Green it makes teal." },
+    { id: "PGX", name: "Phthalo Green",        code: "844-5568 PGX", mat: "99003584 / 11000184", density: 1068, group: "Greens, blues and teals", strength: "vstrong", dot: "#0f7a57", note: "Two tins in stock, density 1068 and 1066." },
+    { id: "QVX", name: "Quinacridone Violet",  code: "844-9461 QVX", mat: "11000203", density: 1047, group: "Purples and mauves",           strength: "medium", dot: "#6d2a7c", note: "The only violet on the van." },
+    { id: "LBX", name: "Lamp Black",           code: "844-9965 LBX", mat: "11000218", density: 1070, group: "Value adjusters",              strength: "vstrong", dot: "#1c1c1e", note: "With Phthalo Blue and Titanium White it makes blue-greys." },
+    { id: "TWX", name: "Titanium White",       code: "844-0071 TWX", mat: "11000121", density: 1898, group: "Value adjusters",              strength: "gentle", dot: "#f4f4f1", note: "The main lightener for every colour group." }
+  ];
+  var T = {};
+  TINTERS.forEach(function (t) { T[t.id] = t; });
+
+  var STRENGTH = {
+    vstrong: { label: "Very strong", cls: "stop", how: "The smallest touch you can manage, then check." },
+    medium:  { label: "Medium",      cls: "warn", how: "Add a drop at a time." },
+    gentle:  { label: "Gentle",      cls: "ok",   how: "Needs more than you expect to shift the colour." }
+  };
+
+  var SYRINGE_MIN_ML = 0.10;
+  var SYRINGES = [1, 3, 5, 10, 20];
+
+  var EXAMPLE = {
+    recipeQty: 500,
+    rows: [
+      { t: "TWX", g: 22 },
+      { t: "LBX", g: 14 },
+      { t: "BUX", g: 3.2 },
+      { t: "PBX", g: 1.6 }
+    ]
+  };
+
+  var state = {
+    recipeQty: EXAMPLE.recipeQty,
+    need: 100,
+    res: 0.1,
+    rows: EXAMPLE.rows.map(function (r) { return { t: r.t, g: r.g }; }),
+    isExample: true,
+    family: "lightgrey",
+    problem: null
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  // ── Number formatting ──
+  function fmtQty(ml) {
+    if (ml >= 1000) {
+      var l = ml / 1000;
+      return (Math.abs(l - Math.round(l)) < 1e-9 ? l.toFixed(0) : l.toFixed(1)) + " L";
+    }
+    return Math.round(ml) + " ml";
+  }
+  function roundUpNice(ml) {
+    var step = ml <= 1000 ? 5 : 100;
+    return Math.ceil(ml / step - 1e-9) * step;
+  }
+  function resDecimals(res) { return res >= 1 ? 0 : res >= 0.1 ? 1 : 2; }
+  function fmtSmallG(g) { return g < 0.1 ? g.toFixed(3) : g.toFixed(2); }
+
+  // ── The scaling maths ──
+  function calc() {
+    var rows = state.rows.filter(function (r) { return r.g > 0 && T[r.t]; });
+    if (!(state.recipeQty > 0) || !(state.need > 0) || rows.length === 0) return null;
+    var f = state.need / state.recipeQty;
+    var thr = state.res * 10;
+    var weighFactor = 0, syringeFactor = 0;
+    var lines = rows.map(function (r) {
+      var t = T[r.t];
+      var gPerMl = t.density / 1000;
+      var g = r.g * f;
+      var ml = g / gPerMl;
+      var method = g >= thr - 1e-9 ? "weigh" : (ml >= SYRINGE_MIN_ML - 1e-9 ? "syringe" : "small");
+      weighFactor = Math.max(weighFactor, thr / r.g);
+      syringeFactor = Math.max(syringeFactor, Math.min(thr, SYRINGE_MIN_ML * gPerMl) / r.g);
+      var syringe = null;
+      if (method === "syringe") {
+        for (var i = 0; i < SYRINGES.length; i++) { if (SYRINGES[i] >= ml - 1e-9) { syringe = SYRINGES[i]; break; } }
+        if (syringe === null) syringe = SYRINGES[SYRINGES.length - 1];
+      }
+      return { t: t, g: g, ml: ml, method: method, syringe: syringe, stockOk: g * 10 >= thr - 1e-9 };
+    });
+    return {
+      lines: lines,
+      thr: thr,
+      weighMin: roundUpNice(state.recipeQty * weighFactor),
+      syringeMin: roundUpNice(state.recipeQty * syringeFactor)
+    };
+  }
+
+  // ── Recipe rows ──
+  function renderRows() {
+    var box = $("rows");
+    box.textContent = "";
+    state.rows.forEach(function (r, i) {
+      var row = el("div", "row");
+
+      var sel = el("select", "pick");
+      sel.id = "row-t-" + i;
+      sel.setAttribute("aria-label", "Tinter " + (i + 1));
+      TINTERS.forEach(function (t) {
+        var o = el("option", null, t.name);
+        o.value = t.id;
+        if (t.id === r.t) o.selected = true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener("change", function () { r.t = sel.value; touched(); renderResults(); });
+
+      var inp = el("input", "num");
+      inp.id = "row-g-" + i;
+      inp.type = "number";
+      inp.inputMode = "decimal";
+      inp.min = "0";
+      inp.step = "any";
+      inp.value = r.g > 0 ? String(r.g) : "";
+      inp.placeholder = "0";
+      inp.setAttribute("aria-label", "Grams of tinter " + (i + 1));
+      inp.addEventListener("input", function () { r.g = parseFloat(inp.value) || 0; touched(); renderResults(); });
+
+      var unit = el("span", "unit", "g");
+
+      var del = el("button", "icon-btn", "×");
+      del.type = "button";
+      del.setAttribute("aria-label", "Remove tinter " + (i + 1));
+      del.addEventListener("click", function () { state.rows.splice(i, 1); touched(); renderRows(); renderResults(); });
+
+      row.appendChild(sel); row.appendChild(inp); row.appendChild(unit); row.appendChild(del);
+      box.appendChild(row);
+    });
+    if (state.rows.length === 0) {
+      box.appendChild(el("p", "hint", "No tinters yet. Add the tinters and weights from the recipe HQ sent you."));
+    }
+  }
+  function touched() { state.isExample = false; $("example-note").hidden = true; }
+
+  // ── Results ──
+  function renderResults() {
+    var c = calc();
+    var verdict = $("verdict");
+    var lines = $("lines");
+    verdict.textContent = "";
+    lines.textContent = "";
+
+    document.querySelectorAll("#need-chips .chip").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(parseFloat(b.dataset.need) === state.need));
+    });
+    document.querySelectorAll("#res-chips .chip").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(parseFloat(b.dataset.res) === state.res));
+    });
+
+    if (!c) {
+      $("result-title").textContent = "Your mix";
+      lines.appendChild(el("p", "hint", "Enter the recipe and the amount you need. The weights appear here."));
+      return;
+    }
+    $("result-title").textContent = "Your mix for " + fmtQty(state.need);
+
+    var nSyr = c.lines.filter(function (l) { return l.method === "syringe"; }).length;
+    var nSmall = c.lines.filter(function (l) { return l.method === "small"; }).length;
+    var scaleName = state.res + " g scale";
+    var box = el("div", "verdict");
+    var head = el("strong");
+    var body = el("p");
+    var actions = [];
+
+    if (nSyr === 0 && nSmall === 0) {
+      box.classList.add("ok");
+      head.textContent = "Good to weigh";
+      body.textContent = "Every tinter is heavy enough for a " + scaleName + ".";
+    } else if (nSmall === 0) {
+      box.classList.add("warn");
+      head.textContent = nSyr + (nSyr === 1 ? " tinter is" : " tinters are") + " too light to weigh at this size";
+      body.textContent = "Measure " + (nSyr === 1 ? "it" : "them") + " by syringe, or make " + fmtQty(c.weighMin) + " and weigh everything on a " + scaleName + ".";
+      actions.push(c.weighMin);
+    } else {
+      box.classList.add("stop");
+      head.textContent = nSmall + (nSmall === 1 ? " tinter is" : " tinters are") + " too small to measure at this size";
+      body.textContent = "The smallest batch that works with a syringe is " + fmtQty(c.syringeMin) + ". To weigh everything on a " + scaleName + ", make " + fmtQty(c.weighMin) + ".";
+      actions.push(c.syringeMin);
+      if (c.weighMin !== c.syringeMin) actions.push(c.weighMin);
+    }
+    box.appendChild(head);
+    box.appendChild(body);
+    if (actions.length) {
+      var ar = el("div", "link-row");
+      actions.forEach(function (ml) {
+        var b = el("button", "ghost", "Make " + fmtQty(ml) + " instead");
+        b.type = "button";
+        b.addEventListener("click", function () { setNeed(ml); });
+        ar.appendChild(b);
+      });
+      box.appendChild(ar);
+    }
+    verdict.appendChild(box);
+
+    var dp = resDecimals(state.res);
+    c.lines.forEach(function (l) {
+      var line = el("div", "line");
+      var dot = el("span", "dot");
+      dot.style.background = l.t.dot;
+      var name = el("div", "name", l.t.name);
+      name.appendChild(el("span", "code", l.t.code));
+      var amount = el("div", "amount");
+      var why = null;
+
+      if (l.method === "weigh") {
+        amount.textContent = l.g.toFixed(dp) + " g";
+        amount.appendChild(el("span", "pill ok", "Weigh"));
+      } else if (l.method === "syringe") {
+        amount.textContent = l.ml.toFixed(l.syringe === 1 ? 2 : 1) + " ml";
+        amount.appendChild(el("span", "pill warn", l.syringe + " ml syringe"));
+        why = el("p", "why", "That is " + fmtSmallG(l.g) + " g, too light for a " + scaleName + " to weigh reliably.");
+      } else {
+        amount.textContent = fmtSmallG(l.g) + " g";
+        amount.appendChild(el("span", "pill stop", "Too small"));
+        var msg = "That is " + l.ml.toFixed(3) + " ml, too little for a scale or a syringe.";
+        if (l.stockOk) {
+          msg += " As a 1 to 9 stock tint it becomes " + (l.g * 10).toFixed(dp) + " g, which this scale can weigh. Stock tints need Technical sign-off first.";
+        } else {
+          msg += " Make a bigger batch.";
+        }
+        why = el("p", "why", msg);
+      }
+      line.appendChild(dot); line.appendChild(name); line.appendChild(amount);
+      if (why) line.appendChild(why);
+      lines.appendChild(line);
+    });
+    lines.appendChild(el("div", "binder", "Then add binder to bring it up to " + fmtQty(state.need) + "."));
+  }
+
+  function setNeed(ml) {
+    state.need = ml;
+    $("need-qty").value = String(ml);
+    renderResults();
+  }
+
+  // ── Coach rules (draft, pending Technical sign-off) ──
+  var GREYS = { lightgrey: true, darkgrey: true };
+  function advice(family, problem) {
+    var grey = !!GREYS[family], green = family === "green";
+    switch (problem) {
+      case "light":
+        if (green) return { head: "Deepen it with Phthalo Green", first: ["PGX", "Deepens a green without greying it."], second: ["LBX", "Darkens faster, but it also dulls a green."] };
+        return { head: "Darken it with Lamp Black", first: ["LBX", family === "lightgrey" ? "On a light grey a trace of black goes a long way." : "Darkens quickly."], note: "If the colour looks weak, not just pale, add more of the recipe's main tinter before reaching for black." };
+      case "dark":
+        return { head: "Lighten it with Titanium White", first: ["TWX", "The main lightener for every colour group."], note: "White can leave a colour looking chalkier and cooler. Check the tone again after lightening." };
+      case "red":
+        return { head: "Cancel the red with Phthalo Green", first: ["PGX", "Green cancels red."], note: grey ? "A pink cast in a grey needs very little green to clear." : null };
+      case "green":
+        if (green) return { head: "Calm it with Burnt Umber", first: ["BUX", "Takes a green toward a natural, muted tone."], second: ["ROX", "Red cancels green. Gentle, so easy to control."] };
+        if (grey) return { head: "Cancel the green with Red Oxide", first: ["ROX", "Red cancels green. Gentle, so easy to control in a grey."], second: ["QRX", "Cleaner and stronger. Use it if Red Oxide is turning the grey brown."] };
+        return { head: "Cancel the green with Quinacridone Red", first: ["QRX", "Red cancels green, and this is the clean red."], second: ["ROX", "Gentler and earthier. Easier to control in a small batch."] };
+      case "yellow":
+        if (green) return { head: "Pull it back with Phthalo Blue", first: ["PBX", "Takes a yellow-green back toward blue."], second: ["PGX", "Adds green without pushing as far toward blue."] };
+        return { head: "Cancel the yellow with Quinacridone Violet", first: ["QVX", "Violet cancels yellow."], second: grey ? ["PBX", "A trace cools a warm grey."] : null };
+      case "blue":
+        if (green) return { head: "Bring it back with Organic Yellow", first: ["OYX", "Clean yellow takes a blue-green back toward green."], second: ["YOX", "Use this one for muted, natural greens."] };
+        return { head: "Warm it with Burnt Umber", first: ["BUX", "Warms and neutralises a cool colour."], second: ["YOX", "A gentler warm shift. Pair it with Red Oxide for a sandy tone."] };
+      case "bright":
+        return { head: "Knock it back with Burnt Umber", first: ["BUX", green ? "Makes a natural, muted green." : "Neutralises and warms other colours."], second: ["LBX", "Greys the colour down and darkens it at the same time."], note: grey ? "On a grey, name the cast if you can see one: too blue, too green, too red or too yellow." : null };
+      case "dull":
+        return { head: "You can't take dullness out", plain: "Nothing on the van removes it. Add more of the clean tinter that carries the colour to lift it. If it is a long way off, start again, and make a batch big enough to measure properly.", list: ["OYX", "QRX", "PBX", "PGX", "QVX"], sprite: "images/marv-wincing.png" };
+    }
+    return null;
+  }
+
+  function strengthPill(t) {
+    var s = STRENGTH[t.strength];
+    return el("span", "pill " + s.cls, s.label);
+  }
+  function optionBlock(label, pair) {
+    var t = T[pair[0]];
+    var box = el("div", "option");
+    var who = el("div", "who");
+    var dot = el("span", "dot");
+    dot.style.background = t.dot;
+    who.appendChild(dot);
+    who.appendChild(document.createTextNode(label + t.name));
+    who.appendChild(strengthPill(t));
+    box.appendChild(who);
+    box.appendChild(el("p", null, pair[1] + " " + STRENGTH[t.strength].how));
+    return box;
+  }
+
+  function renderCoach() {
+    document.querySelectorAll("#family-chips .chip").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.family === state.family));
+    });
+    document.querySelectorAll("#problem-grid .big-btn").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.problem === state.problem));
+    });
+
+    var card = $("coach-card");
+    card.textContent = "";
+    var a = state.problem ? advice(state.family, state.problem) : null;
+
+    var wrap = el("div", "marv");
+    var tile = el("div", "marv-tile");
+    var img = document.createElement("img");
+    img.alt = "MARV";
+    img.src = a ? (a.sprite || "images/marv-confident.png") : "images/marv-focussed.png";
+    tile.appendChild(img);
+    var say = el("div", "say");
+
+    if (!a) {
+      say.appendChild(el("h3", null, "Tell me what you see"));
+      say.appendChild(el("p", null, "Hold your test dab next to the target, then tap the one thing that is most wrong. I'll tell you which tin to reach for."));
+    } else {
+      say.appendChild(el("h3", null, a.head));
+      if (a.plain) say.appendChild(el("p", null, a.plain));
+      if (a.first) say.appendChild(optionBlock("Add ", a.first));
+      if (a.second) say.appendChild(optionBlock("Or try ", a.second));
+      if (a.list) {
+        var box = el("div", "option");
+        box.appendChild(el("p", null, "The clean tinters: " + a.list.map(function (id) { return T[id].name; }).join(", ") + "."));
+        say.appendChild(box);
+      }
+      if (a.note) say.appendChild(el("p", "hint", a.note));
+    }
+    wrap.appendChild(tile); wrap.appendChild(say);
+    card.appendChild(wrap);
+  }
+
+  // ── Tinter reference ──
+  function renderTinters() {
+    var list = $("tinter-list");
+    TINTERS.forEach(function (t) {
+      var row = el("div", "tinter");
+      var dot = el("span", "dot");
+      dot.style.background = t.dot;
+      var body = el("div");
+      var h = el("h3", null, t.name);
+      h.appendChild(strengthPill(t));
+      var dl = el("dl");
+      [["Code", t.code], ["Material", t.mat], ["Density", t.density + " kg/m³"], ["Group", t.group]].forEach(function (p) {
+        dl.appendChild(el("dt", null, p[0]));
+        dl.appendChild(el("dd", null, p[1]));
+      });
+      body.appendChild(h); body.appendChild(dl); body.appendChild(el("p", null, t.note));
+      row.appendChild(dot); row.appendChild(body);
+      list.appendChild(row);
+    });
+  }
+
+  // ── Wiring ──
+  var TABS = ["scale", "fix", "tinters"];
+  function showTab(name) {
+    TABS.forEach(function (n) {
+      $("tab-" + n).setAttribute("aria-selected", String(n === name));
+      $("panel-" + n).hidden = n !== name;
+    });
+    try { localStorage.setItem("mixbench-tab", name); } catch (e) { /* storage unavailable */ }
+  }
+  TABS.forEach(function (n) { $("tab-" + n).addEventListener("click", function () { showTab(n); }); });
+
+  $("recipe-qty").addEventListener("input", function (e) { state.recipeQty = parseFloat(e.target.value) || 0; touched(); renderResults(); });
+  $("need-qty").addEventListener("input", function (e) { state.need = parseFloat(e.target.value) || 0; renderResults(); });
+  $("need-chips").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-need]");
+    if (b) setNeed(parseFloat(b.dataset.need));
+  });
+  $("res-chips").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-res]");
+    if (b) { state.res = parseFloat(b.dataset.res); renderResults(); }
+  });
+  $("add-row").addEventListener("click", function () {
+    state.rows.push({ t: "TWX", g: 0 });
+    touched(); renderRows(); renderResults();
+    var last = $("row-t-" + (state.rows.length - 1));
+    if (last) last.focus();
+  });
+  $("clear-rows").addEventListener("click", function () {
+    state.rows = [];
+    touched(); renderRows(); renderResults();
+  });
+  $("load-example").addEventListener("click", function () {
+    state.recipeQty = EXAMPLE.recipeQty;
+    state.rows = EXAMPLE.rows.map(function (r) { return { t: r.t, g: r.g }; });
+    state.isExample = true;
+    $("recipe-qty").value = String(state.recipeQty);
+    $("example-note").hidden = false;
+    renderRows(); renderResults();
+  });
+  $("family-chips").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-family]");
+    if (b) { state.family = b.dataset.family; renderCoach(); }
+  });
+  $("problem-grid").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-problem]");
+    if (b) { state.problem = b.dataset.problem; renderCoach(); $("coach-card").scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+  });
+
+  renderRows();
+  renderResults();
+  renderCoach();
+  renderTinters();
+  try {
+    var saved = localStorage.getItem("mixbench-tab");
+    if (saved && TABS.indexOf(saved) !== -1) showTab(saved);
+  } catch (e) { /* storage unavailable */ }
+})();
+</script>
+</body>
+</html>
